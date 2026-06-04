@@ -15,8 +15,10 @@ document.getElementById('formPendapatan').addEventListener('submit', async funct
   e.preventDefault();
   
   const btn = document.getElementById('btnSubmit');
-  btn.disabled = true;
-  btn.innerText = "Memproses...";
+  if (btn) {
+    btn.disabled = true;
+    btn.innerText = "Memproses...";
+  }
   
   const fileInput = document.getElementById('buktiTransfer');
   const file = fileInput ? fileInput.files[0] : null;
@@ -46,7 +48,6 @@ document.getElementById('formPendapatan').addEventListener('submit', async funct
 
 // Eksekusi penembakan data ke API terpusat
 async function executeSubmit(payload) {
-  // DISESUAIKAN: Menggunakan 'pendapatan/add' agar cocok dengan 'case "pendapatan/add":' di GS kamu
   const action = isEditMode ? 'pendapatan/update' : 'pendapatan/add';
   const btn = document.getElementById('btnSubmit');
   if (isEditMode) payload.idPembelian = currentEditId;
@@ -127,7 +128,6 @@ async function loadData() {
 
 // Set form ke mode edit dengan visual feedback senada
 function triggerEdit(idPembelian) {
-  // DISESUAIKAN: Menggunakan '==' (bukan ===) supaya String ID dari HTML bisa matching dengan Number ID dari Google Sheets
   const item = globalDataCache.find(x => x.idPembelian == idPembelian);
   if (!item) return;
 
@@ -188,7 +188,6 @@ function resetFormMode() {
 // Trigger hapus data memakai genericDelete bawaan api.js
 async function triggerDelete(idPembelian) {
   if (typeof genericDelete === 'function') {
-    // DISESUAIKAN: action menggunakan 'pendapatan/delete' sesuai dengan GS kamu
     await genericDelete('pendapatan/delete', idPembelian, function() {
       if(currentEditId === idPembelian) resetFormMode();
       loadData();
