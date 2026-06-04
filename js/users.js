@@ -37,14 +37,33 @@ window.loadUsers = async function() {
         const drivers = users.filter(u => u.role === 'DRIVER');
         const customers = users.filter(u => u.role === 'CUSTOMER');
 
+        // Fungsi bantu (helper) untuk mengamankan string dari tanda kutip dan enter
+        // agar tidak merusak sintaks onclick pada tombol HTML
+        const escapeStr = (str) => {
+            if (!str) return '';
+            return String(str)
+                .replace(/\\/g, '\\\\')
+                .replace(/'/g, "\\'")
+                .replace(/"/g, '&quot;')
+                .replace(/\n/g, ' ')
+                .replace(/\r/g, '');
+        };
+
         // Helper untuk render baris
         // isDriver = true/false untuk menentukan apakah kolom peta ditampilkan
         const renderRow = (u, colorClass, isDriver) => {
+            // Memperbaiki format URL Google Maps yang sebelumnya typo di latitude
             const mapLink = (u.latitude && u.longitude) 
-                ? `<a href="https://www.google.com/maps?q=$${u.latitude},${u.longitude}" 
+                ? `<a href="https://maps.google.com/?q=${u.latitude},${u.longitude}" 
                      target="_blank" 
                      class="text-blue-600 font-bold hover:underline">📍 Buka Peta</a>` 
                 : '<span class="text-gray-400">-</span>';
+
+            // Amankan data teks untuk dikirim via inline onClick
+            const safeNama = escapeStr(u.nama);
+            const safeEmail = escapeStr(u.email);
+            const safeHp = escapeStr(u.noHp || '-');
+            const safeAlamat = escapeStr(u.alamat || '');
 
             return `
             <tr class="border-b border-gray-100 hover:bg-${colorClass}-50 transition">
@@ -61,10 +80,10 @@ window.loadUsers = async function() {
                 ${!isDriver ? `<td class="p-3 text-sm">${mapLink}</td>` : ''}
                 
                 <td class="p-3 text-center space-x-2">
-                    <button onclick="bukaEditModal('${u.id}', '${u.nama}', '${u.email}', '${u.noHp || '-'}', '${u.alamat || ''}')" class="text-blue-500 hover:text-blue-700 bg-blue-50 p-2 rounded transition" title="Edit">
+                    <button onclick="bukaEditModal('${u.id}', '${safeNama}', '${safeEmail}', '${safeHp}', '${safeAlamat}')" class="text-blue-500 hover:text-blue-700 bg-blue-50 p-2 rounded transition" title="Edit">
                         ✏️ Edit
                     </button>
-                    <button onclick="hapusUser('${u.id}', '${u.nama}')" class="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded transition" title="Hapus">
+                    <button onclick="hapusUser('${u.id}', '${safeNama}')" class="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded transition" title="Hapus">
                         🗑️ Hapus
                     </button>
                 </td>
@@ -89,7 +108,7 @@ window.loadUsers = async function() {
         if(document.getElementById('checkAllDriver')) document.getElementById('checkAllDriver').checked = false;
         if(document.getElementById('checkAllCustomer')) document.getElementById('checkAllCustomer').checked = false;
 
- } catch (error) {
+    } catch (error) {
         driverBody.innerHTML = `<tr><td colspan="5" class="text-center p-6 text-red-500 font-bold">Gagal memuat data.</td></tr>`;
         customerBody.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-red-500 font-bold">Gagal memuat data.</td></tr>`;
     }
