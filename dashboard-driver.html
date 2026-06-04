@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Driver - R22 NPSO</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/pink-theme.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="icon" href="r22.png" type="image/png">
+    <link rel="manifest" href="manifest.json">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background-color: #F8FAFC;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] text-slate-800 min-h-screen pb-12 relative">
+
+    <div id="dashboardPage">
+        <header class="bg-white/80 backdrop-blur-lg border-b border-slate-200 px-5 py-4 flex justify-between items-center sticky top-0 z-40">
+            <div class="flex flex-col">
+                <span class="text-[10px] font-bold text-rose-500 uppercase tracking-widest line-clamp-1" id="companyName">Memuat...</span>
+                <h1 class="text-base font-extrabold text-slate-800 mt-0.5 tracking-tight" id="userName">Nama Driver</h1>
+            </div>
+            <button onclick="API.logout()" class="p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all shadow-sm">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+            </button>
+        </header>
+
+        <div class="px-4 mt-5">
+            <div class="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100 p-3 flex items-center space-x-3">
+                <div class="p-2 bg-slate-50 rounded-xl text-slate-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>
+                <input type="date" id="filterTanggal" class="w-full text-sm font-semibold text-slate-700 bg-transparent border-none focus:ring-0 focus:outline-none cursor-pointer" onchange="if(typeof loadDeliveries === 'function') loadDeliveries()">
+            </div>
+        </div>
+
+        <div class="px-4 mt-4">
+            <div class="flex bg-white p-1.5 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100 relative">
+                <button onclick="switchTab('pribadi')" id="tab-pribadi" class="w-1/3 py-2.5 text-[11px] font-bold rounded-xl transition-all text-center bg-rose-50 text-rose-600 shadow-sm">Tugas Saya</button>
+                <button onclick="switchTab('global')" id="tab-global" class="w-1/3 py-2.5 text-[11px] font-bold rounded-xl transition-all text-slate-500 text-center hover:bg-slate-50">Global</button>
+                <button onclick="switchTab('riwayat')" id="tab-riwayat" class="w-1/3 py-2.5 text-[11px] font-bold rounded-xl transition-all text-slate-500 text-center hover:bg-slate-50">Riwayat</button>
+            </div>
+        </div>
+
+        <main class="p-4 space-y-4">
+            <div id="loadingState" class="text-center py-10 text-slate-400 text-sm font-semibold animate-pulse hidden">Menarik data manifest...</div>
+            <div id="deliveryContainer" class="space-y-4 pb-8"></div>
+        </main>
+    </div>
+
+
+<div id="reportModal" class="hidden fixed inset-0 w-full h-full" style="z-index: 9999; background-color: #F8FAFC;">
+    
+    <div class="relative w-full h-full overflow-y-auto" style="-webkit-overflow-scrolling: touch; overscroll-behavior: contain;">
+        
+        <div class="bg-white border-b border-slate-200 px-5 py-4 flex items-center sticky top-0 z-50 shadow-sm">
+            <button onclick="closeReportModal()" class="mr-4 bg-slate-50 hover:bg-slate-100 text-slate-600 p-2 rounded-full transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            </button>
+            <h3 class="text-xl font-extrabold text-slate-800 tracking-tight">Form Laporan</h3>
+        </div>
+
+        <div class="p-5 space-y-6 pb-24">
+            
+            <div class="bg-white p-4 rounded-2xl text-sm space-y-1.5 border border-slate-100 shadow-sm">
+                <p class="text-slate-500">Pelanggan: <span id="formCustomer" class="font-extrabold text-slate-800"></span></p>
+                <p class="text-slate-500">No. SJ: <span id="formIdPengiriman" class="font-extrabold text-slate-800"></span></p>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2">
+                <div class="bg-white p-2 rounded-xl border border-pink-100 text-center shadow-sm">
+                    <label class="font-extrabold text-pink-600 block mb-1 tracking-wider" style="font-size: 9px;">5.5 KG</label>
+                    <input type="number" id="input5k" class="w-full text-center font-extrabold text-sm text-slate-800 bg-slate-50 border border-slate-100 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 rounded-lg p-2 outline-none transition-all">
+                </div>
+                <div class="bg-white p-2 rounded-xl border border-blue-100 text-center shadow-sm">
+                    <label class="font-extrabold text-blue-600 block mb-1 tracking-wider" style="font-size: 9px;">12 KG</label>
+                    <input type="number" id="input12k" class="w-full text-center font-extrabold text-sm text-slate-800 bg-slate-50 border border-slate-100 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-lg p-2 outline-none transition-all">
+                </div>
+                <div class="bg-white p-2 rounded-xl border border-red-100 text-center shadow-sm">
+                    <label class="font-extrabold text-red-600 block mb-1 tracking-wider" style="font-size: 9px;">50 KG</label>
+                    <input type="number" id="input50k" class="w-full text-center font-extrabold text-sm text-slate-800 bg-slate-50 border border-slate-100 focus:border-red-400 focus:ring-2 focus:ring-red-100 rounded-lg p-2 outline-none transition-all">
+                </div>
+            </div>
+
+            <div id="instructionAlert" class="bg-amber-50 border border-amber-100 rounded-xl p-3 flex items-start space-x-2">
+                <span class="text-amber-500 text-sm mt-0.5">⚠️</span>
+                <p class="font-bold text-amber-800 leading-tight" style="font-size: 10px;">
+                    Silahkan perbaharui Data Pengiriman Apabila jadwal berbeda dengan pengiriman dilapangan.
+                </p>
+            </div>
+
+            <input type="text" id="inputRetur" placeholder="Keterangan Retur (opsional)" class="w-full text-sm font-medium text-slate-700 p-4 border border-slate-200 rounded-2xl bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-400 transition-all">
+            
+            <textarea id="inputCatatan" rows="3" placeholder="Catatan Tambahan..." class="w-full text-sm font-medium text-slate-700 p-4 border border-slate-200 rounded-2xl bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-400 transition-all"></textarea>
+            
+            <div class="space-y-3 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Bukti Foto Laporan</label>
+                <div class="relative w-full h-56 bg-slate-900 rounded-xl overflow-hidden shadow-inner">
+                    <video id="videoReport" class="w-full h-full object-cover" playsinline autoplay muted></video>
+                    <img id="previewReport" class="hidden w-full h-full object-cover" />
+                    <canvas id="photoCanvas" class="hidden"></canvas>
+                </div>
+                <div class="flex space-x-3 pt-2">
+                    <button type="button" onclick="takeSnapshot('Laporan')" class="flex-1 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-bold py-3.5 rounded-xl text-sm transition-all shadow-md shadow-pink-100">Ambil Foto</button>
+                    <button type="button" onclick="startCamera('Laporan'); document.getElementById('previewReport').classList.add('hidden'); document.getElementById('videoReport').classList.remove('hidden');" class="bg-slate-100 hover:bg-slate-200 px-6 rounded-xl text-slate-600 font-bold text-sm transition-colors">Ulang</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 pt-4">
+                <button onclick="closeReportModal()" class="w-full bg-white border-2 border-slate-200 text-slate-500 hover:bg-slate-50 font-bold py-4 rounded-xl text-sm transition-all">Kembali</button>
+                <button onclick="submitDeliveryReport('SELESAI')" class="w-full bg-gradient-to-r from-pink-500 to-pink-600 text-white font-bold py-4 rounded-xl text-sm transition-all" style="box-shadow: 0 4px 12px rgba(219,39,119,0.25);">Selesai</button>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+    <script src="js/api.js"></script>
+    <script src="js/driver.js"></script>
+</body>
+</html>

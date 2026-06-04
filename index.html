@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - R22 NPSO</title>
+    
+    <script>
+        function proteksiHalamanLogin() {
+            const isLoggedIn = localStorage.getItem('r22_token');
+            const userDataString = localStorage.getItem('r22_user'); 
+
+            if (isLoggedIn) {
+                try {
+                    if (userDataString) {
+                        const userData = JSON.parse(userDataString);
+                        const userRole = userData.role; 
+
+                        if (userRole === 'ADMIN' || userRole === 'SUPER_ADMIN') {
+                            window.location.replace('dashboard-admin.html');
+                        } else if (userRole === 'DRIVER') {
+                            window.location.replace('dashboard-driver.html');
+                        } else {
+                            window.location.replace('dashboard-customer.html');
+                        }
+                    } else {
+                        window.location.replace('dashboard-customer.html');
+                    }
+                } catch (error) {
+                    console.error("Gagal membaca data r22_user:", error);
+                    localStorage.clear(); 
+                }
+            }
+        }
+
+        // 1. Jalankan langsung pas loading pertama (jika diketik manual URL-nya)
+        proteksiHalamanLogin();
+
+        // 2. JALANKAN PAS USER PENCET TOMBOL BACK (Menghancurkan BFCache Browser)
+        window.addEventListener('pageshow', function(event) {
+            proteksiHalamanLogin();
+        });
+    </script>
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/pink-theme.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <link rel="icon" href="r22.png" type="image/png">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-slate-50 text-slate-800">
+    
+    <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: url('https://www.transparenttextures.com/patterns/cubes.png');"></div>
+    
+    <div class="absolute top-0 left-0 w-64 h-64 bg-rose-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 pointer-events-none translate-x-[-20%] translate-y-[-20%]"></div>
+    <div class="absolute bottom-0 right-0 w-80 h-80 bg-rose-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none translate-x-[20%] translate-y-[20%]"></div>
+
+    <div class="glass-card w-full max-w-md p-8 md:p-10 relative z-10" data-aos="zoom-in" data-aos-duration="800">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-extrabold text-pink-gradient mb-2 tracking-tight">R22 NPSO</h1>
+            <p class="text-slate-500 text-sm font-medium">ERP System Management</p>
+        </div>
+        
+        <form id="loginForm" class="space-y-5">
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">Email Pengguna</label>
+                <input type="email" id="email" class="input-elegant" placeholder="nama@email.com" required>
+            </div>
+            
+            <div class="relative">
+                <label class="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">Kata Sandi</label>
+                <input type="password" id="password" class="input-elegant pr-12" placeholder="••••••••" required>
+                <button type="button" onclick="togglePassword()" class="absolute right-4 top-[38px] text-slate-400 hover:text-rose-600 transition-colors">
+                    <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path id="eyePath" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="text-right">
+                <button type="button" onclick="lupaPassword()" class="text-xs text-rose-600 font-bold hover:text-rose-700 transition">Lupa kata sandi?</button>
+            </div>
+
+            <button type="submit" id="btnLogin" class="btn-primary-pink w-full mt-4 py-3 text-sm">Sign In</button>
+        </form>
+
+        <p class="mt-8 text-center text-sm text-slate-600 font-medium">
+            Belum punya akun? <a href="register.html" class="text-rose-600 font-bold hover:text-rose-700 transition">Daftar sekarang</a>
+        </p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        AOS.init({ once: true });
+        
+        function togglePassword() {
+            const passInput = document.getElementById('password');
+            const eyePath = document.getElementById('eyePath');
+            if (passInput.type === "password") {
+                passInput.type = "text";
+                eyePath.setAttribute('d', 'M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.7 9.7 0 012.875-4.275m1.5 1.5a10.05 10.05 0 008.167 8.167m1.5-1.5l-6-6M9.5 9.5l-2.5-2.5m0 0l-1.5-1.5M12 15a3 3 0 100-6 3 3 0 000 6z');
+            } else {
+                passInput.type = "password";
+                eyePath.setAttribute('d', 'M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z');
+            }
+        }
+    </script>
+</body>
+</html>

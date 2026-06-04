@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Customer - R22 NPSO</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"><link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet"><link rel="stylesheet" href="css/pink-theme.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="icon" href="r22.png" type="image/png">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="r22.png" type="image/png">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="r22.png" type="image/png">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="r22.png" type="image/png">
+<link rel="manifest" href="manifest.json">
+</head>
+<body class="bg-gray-50 h-screen flex flex-col">
+    <header class="bg-pink-gradient text-white p-4 flex justify-between items-center rounded-b-3xl pb-6 shadow-lg" data-aos="fade-down">
+        <div><h1 class="font-bold text-xl">R22 LPG Store</h1><p class="text-xs opacity-90" id="customerName">Memuat...</p></div>
+        <button onclick="API.logout()" class="bg-white text-pink-500 px-3 py-1.5 rounded-full text-xs font-bold shadow hover:bg-pink-50 transition flex items-center">
+            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg> Keluar
+        </button>
+    </header>
+    <main class="flex-1 p-4 -mt-4 overflow-y-auto">
+        <div class="glass-card p-6 mb-6 bg-white shadow-xl" data-aos="fade-up" data-aos-delay="100"><h2 class="font-bold text-lg mb-1 text-gray-800">Pesan LPG Sekarang</h2><p class="text-sm text-gray-500 mb-4">Pengiriman cepat ke alamat Anda.</p><button onclick="bukaFormOrder()" class="btn-primary-pink w-full py-3 shadow-lg hover:shadow-xl transition">+ Buat Pesanan Baru</button></div>
+        <h3 class="font-bold text-gray-700 mb-3 ml-1" data-aos="fade-right" data-aos-delay="200">Pesanan Aktif Anda</h3>
+        <div class="glass-card p-5 border-l-4 border-yellow-400 bg-white shadow-md" data-aos="fade-up" data-aos-delay="300"><span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded">MENUNGGU PEMBAYARAN</span><p class="font-bold mt-2 text-gray-800">10x LPG 12 Kg</p><p class="text-sm text-gray-500 mb-4">Total: <span class="font-bold text-pink-500">Rp 2.150.000</span></p><button onclick="uploadBuktiTransfer('ORD-20260522-123')" class="w-full bg-gray-50 hover:bg-gray-100 text-gray-700 py-2.5 rounded text-sm font-bold border transition shadow-sm">Upload Bukti Transfer</button></div>
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script><script>AOS.init();</script>
+    <script src="js/api.js"></script><script src="js/customer.js"></script>
+</body>
+</html>

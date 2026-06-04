@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maps Customer - R22 NPSO</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8FAFC; }
+        #map { z-index: 10; height: 500px; }
+        
+        /* Custom Scrollbar Pink Theme */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #FDA4AF; border-radius: 10px; }
+        
+        /* Mobile adjustment */
+        @media (max-width: 768px) {
+            #map { height: 400px; }
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 lg:p-10 text-slate-800">
+
+    <header class="max-w-6xl mx-auto mb-8 flex justify-between items-center bg-white p-6 rounded-3xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100">
+        <h1 class="text-xl font-extrabold text-slate-800 tracking-tight">🗺️ Peta Lokasi Customer</h1>
+        <a href="users.html" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm transition-colors">
+            Kembali
+        </a>
+    </header>
+
+    <main class="max-w-6xl mx-auto">
+        <div class="flex gap-2 mb-6 bg-white p-1 rounded-2xl shadow-sm border border-slate-100 w-fit">
+            <button id="btnTable" onclick="switchView('table')" class="active-tab bg-gradient-to-r from-rose-500 to-pink-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-rose-200 transition-all">
+                📋 Daftar
+            </button>
+            <button id="btnMap" onclick="switchView('map')" class="bg-transparent text-slate-500 hover:text-rose-600 px-6 py-2.5 rounded-xl font-bold text-sm transition-all">
+                🗺️ Peta
+            </button>
+        </div>
+
+        <div id="viewTable" class="bg-white p-6 lg:p-8 rounded-3xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100">
+            <h2 class="text-lg font-extrabold mb-6 text-slate-800">Data Customer</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse whitespace-nowrap">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-100 text-slate-500">
+                            <th class="p-4 font-semibold text-xs uppercase tracking-wider rounded-l-xl">Nama</th>
+                            <th class="p-4 font-semibold text-xs uppercase tracking-wider">Kontak</th>
+                            <th class="p-4 font-semibold text-xs uppercase tracking-wider rounded-r-xl">Lokasi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userBody" class="divide-y divide-slate-100 text-sm"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="viewMap" class="hidden flex flex-col lg:flex-row h-auto lg:h-[600px] border border-slate-100 rounded-3xl shadow-[0_8px_24px_rgba(0,0,0,0.06)] bg-white overflow-hidden">
+            <div id="map" class="w-full lg:w-2/3"></div>
+            
+            <div id="sidePanel" class="w-full lg:w-1/3 h-full p-6 lg:p-8 bg-slate-50 border-t lg:border-t-0 lg:border-l border-slate-100 overflow-y-auto">
+                <h2 class="text-xl font-extrabold mb-4 text-slate-800">Detail Lokasi</h2>
+                <div id="detailContent" class="text-slate-500 text-sm leading-relaxed">
+                    <p class="italic">Klik ikon di peta untuk melihat detail informasi customer.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script> 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/maps.js"></script>
+
+    <script>
+        function switchView(view) {
+            const btnTable = document.getElementById('btnTable');
+            const btnMap = document.getElementById('btnMap');
+            const viewTable = document.getElementById('viewTable');
+            const viewMap = document.getElementById('viewMap');
+
+            if(view === 'table') {
+                viewTable.classList.remove('hidden');
+                viewMap.classList.add('hidden');
+                btnTable.className = "bg-gradient-to-r from-rose-500 to-pink-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-rose-200 transition-all";
+                btnMap.className = "bg-transparent text-slate-500 hover:text-rose-600 px-6 py-2.5 rounded-xl font-bold text-sm transition-all";
+            } else {
+                viewTable.classList.add('hidden');
+                viewMap.classList.remove('hidden');
+                btnMap.className = "bg-gradient-to-r from-rose-500 to-pink-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-rose-200 transition-all";
+                btnTable.className = "bg-transparent text-slate-500 hover:text-rose-600 px-6 py-2.5 rounded-xl font-bold text-sm transition-all";
+                
+                // Perbaikan leaflet agar map ter-render ulang saat muncul
+                if (typeof map !== 'undefined') map.invalidateSize();
+            }
+        }
+    </script>
+</body>
+</html>

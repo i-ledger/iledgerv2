@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Daftar Pangkalan - R22</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/pink-theme.css"><script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="icon" href="r22.png" type="image/png">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="r22.png" type="image/png">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="r22.png" type="image/png">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="r22.png" type="image/png">
+<link rel="manifest" href="manifest.json">
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 py-10 bg-pink-gradient">
+    <div class="glass-card w-full max-w-lg p-8 shadow-2xl" data-aos="fade-down" data-aos-duration="1000">
+        <div class="text-center mb-8"><span class="bg-pink-100 text-pink-600 px-3 py-1 rounded-full text-xs font-bold">AGEN / OWNER</span><h1 class="text-3xl font-bold mt-4 text-pink-gradient">Setup Pangkalan Baru</h1></div>
+        <form id="registerAdminForm" class="space-y-4">
+            <div><label class="block text-sm font-medium">Nama Pangkalan</label><input type="text" id="regPerusahaan" class="input-elegant w-full" required></div>
+            <div class="grid grid-cols-2 gap-4"><div><label class="block text-sm">Nama Pemilik</label><input type="text" id="regNama" class="input-elegant w-full" required></div><div><label class="block text-sm">No HP</label><input type="tel" id="regHp" class="input-elegant w-full" required></div></div>
+            <div><label class="block text-sm">Email Login</label><input type="email" id="regEmail" class="input-elegant w-full" required></div>
+            <div><label class="block text-sm">Password</label><input type="password" id="regPassword" class="input-elegant w-full" required></div>
+            <button type="submit" id="btnRegisterAdmin" class="btn-primary-pink w-full mt-4">Buat Database</button>
+        </form>
+        <p class="mt-6 text-center text-sm"><a href="index.html" class="text-pink-500 font-bold hover:underline">Kembali ke Login</a></p>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script><script>AOS.init();</script>
+    <script src="js/api.js"></script>
+    <script>
+        document.getElementById('registerAdminForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); const btn = document.getElementById('btnRegisterAdmin'); btn.innerHTML = 'Membangun Database...'; btn.disabled = true;
+            try { await API.request('register', { namaPerusahaan: document.getElementById('regPerusahaan').value, nama: document.getElementById('regNama').value, email: document.getElementById('regEmail').value, password: document.getElementById('regPassword').value, noHP: document.getElementById('regHp').value, alamat: "-", role: "ADMIN", tenantId: "" }); Swal.fire({icon: 'success', title: 'Berhasil'}).then(() => window.location.href = 'index.html'); } catch (err) { btn.innerHTML = 'Buat Database'; btn.disabled = false; }
+        });
+    </script>
+</body>
+</html>

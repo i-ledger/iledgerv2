@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stok - Admin</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/pink-theme.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <link rel="icon" href="r22.png" type="image/png">
+    <link rel="manifest" href="manifest.json">
+
+    <style>
+        /* Modern Typography & Smooth Scrolling */
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background-color: #F8FAFC; /* Slate 50 */
+        }
+
+        /* Elegant Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+
+        /* Sidebar Link Active State */
+        .sidebar-link.active {
+            background-color: #FFF1F2; /* Rose 50 */
+            color: #E11D48; /* Rose 600 */
+            font-weight: 700;
+        }
+        .sidebar-link.active svg {
+            color: #E11D48;
+        }
+
+        /* Hide scrollbar for sidebar nav but allow scroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-slate-800">
+    
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-30 hidden opacity-0 transition-opacity duration-300 lg:hidden"></div>
+
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-white border-r border-slate-100 shadow-[4px_0_24px_rgba(0,0,0,0.02)] transform -translate-x-full lg:translate-x-0 lg:static lg:flex flex-col transition-transform duration-300 ease-in-out">
+        
+        <div class="h-20 flex items-center justify-center border-b border-slate-100">
+            <h2 class="text-2xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-pink-600">
+                R22 NPSO
+            </h2>
+        </div>
+
+        <div class="px-6 py-8 border-b border-slate-100 flex flex-col items-center text-center bg-slate-50/50">
+            <div class="w-20 h-20 rounded-full bg-white border-4 border-white shadow-md flex items-center justify-center mb-4 overflow-hidden relative group cursor-pointer">
+                <svg class="w-10 h-10 text-slate-300 group-hover:text-rose-400 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+            </div>
+            <h3 class="text-base font-extrabold text-slate-800 leading-tight mb-1" id="userName">Admin</h3>
+            <p class="text-[10px] font-bold text-rose-500 uppercase tracking-widest mb-3 line-clamp-1" id="companyName">Memuat Perusahaan...</p>
+            <span class="text-[10px] font-bold text-rose-700 bg-rose-100 border border-rose-200 px-3 py-1 rounded-full uppercase tracking-wider shadow-sm" id="userRole">Admin</span>
+        </div>
+
+        <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto no-scrollbar">
+            <a href="dashboard-admin.html" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-2xl text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                <span class="font-semibold text-sm">Dashboard</span>
+            </a>
+            <a href="stok.html" class="sidebar-link active flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                <span class="font-semibold text-sm">Stok LPG</span>
+            </a>
+            <a href="penjualan.html" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-2xl text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                <span class="font-semibold text-sm">Penjualan</span>
+            </a>
+            <a href="order.html" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-2xl text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <span class="font-semibold text-sm">Order Customer</span>
+            </a>
+            <a href="pengiriman.html" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-2xl text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                <span class="font-semibold text-sm">Data Pengiriman</span>
+            </a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 flex flex-col min-w-0 bg-[#F8FAFC]">
+        
+        <header class="h-20 bg-white/80 backdrop-blur-lg border-b border-slate-200 px-6 lg:px-10 flex justify-between items-center z-20 sticky top-0">
+            
+            <div class="flex items-center gap-4">
+                <button id="btnHamburger" class="lg:hidden p-2 -ml-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <div>
+                    <h1 class="font-extrabold text-xl lg:text-2xl text-slate-800 tracking-tight" data-aos="fade-right">Manajemen Stok LPG</h1>
+                </div>
+            </div>
+            
+            <div class="relative flex items-center">
+                <button id="btnActionMenu" class="lg:hidden p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+                </button>
+
+                <div id="actionContainer" class="hidden absolute right-0 top-14 w-56 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-slate-100 rounded-2xl p-2 flex-col gap-1 z-50 lg:static lg:flex lg:flex-row lg:bg-transparent lg:shadow-none lg:border-none lg:p-0 lg:w-auto lg:items-center lg:gap-2">
+                    
+                    <a href="users.html" class="flex items-center gap-3 px-4 py-2.5 lg:p-2.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all" title="Data Pengguna">
+                        <svg class="w-5 h-5 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        <span class="lg:hidden text-sm font-semibold">Data Pengguna</span>
+                    </a>
+                    
+                    <a href="approval.html" class="relative flex items-center gap-3 px-4 py-2.5 lg:p-2.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all" title="Approval Akun">
+                        <svg class="w-5 h-5 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        <span id="notifBadge" class="absolute top-2.5 left-7 lg:top-1.5 lg:right-1.5 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full hidden animate-pulse"></span>
+                        <span class="lg:hidden text-sm font-semibold">Approval Akun</span>
+                    </a>
+                    
+                    <a href="setting.html" class="flex items-center gap-3 px-4 py-2.5 lg:p-2.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all" title="Pengaturan">
+                        <svg class="w-5 h-5 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <span class="lg:hidden text-sm font-semibold">Pengaturan</span>
+                    </a>
+                    
+                    <div class="hidden lg:block h-8 w-px bg-slate-200 mx-2"></div>
+                    <div class="lg:hidden h-px w-full bg-slate-100 my-1"></div>
+                    
+                    <button onclick="API.logout()" class="w-full lg:w-auto flex items-center gap-3 px-4 py-2.5 lg:p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all" title="Keluar">
+                        <svg class="w-5 h-5 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                        <span class="lg:hidden text-sm font-semibold text-red-500">Keluar Sistem</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-6 lg:p-10 scroll-smooth">
+            
+            <div class="bg-white rounded-3xl p-6 lg:p-8 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100 mb-8 transition-all hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]" data-aos="fade-up">
+                
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 border-b border-slate-100 pb-6">
+    <div class="flex flex-col sm:flex-row sm:items-center gap-4 w-full md:w-auto">
+        <h2 class="text-xl font-extrabold text-slate-800">Ketersediaan Stok Saat Ini</h2>
+        <button onclick="modalTambahStok()" class="w-full sm:w-auto bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-md shadow-pink-200 transition-all flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Restock (Beli)
+        </button>
+    </div>
+                    
+                    <div class="relative w-full md:w-72">
+                        <input type="text" id="searchStok" class="appearance-none w-full bg-slate-50 border border-slate-200 text-slate-700 py-2.5 pl-10 pr-4 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-400 transition-all shadow-sm" placeholder="Cari Barang..." onkeyup="filterTable('searchStok', 'stokBody')">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse whitespace-nowrap">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-100 text-slate-500">
+                                <th class="py-4 px-4 font-semibold text-sm uppercase tracking-wider rounded-tl-xl">ID Barang</th>
+                                <th class="py-4 px-4 font-semibold text-sm uppercase tracking-wider">Nama LPG</th>
+                                <th class="py-4 px-4 font-semibold text-sm uppercase tracking-wider">Masuk</th>
+                                <th class="py-4 px-4 font-semibold text-sm uppercase tracking-wider">Keluar</th>
+                                <th class="py-4 px-4 font-semibold text-sm uppercase tracking-wider rounded-tr-xl">Stok Akhir</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stokBody" class="text-slate-700 text-sm font-medium">
+                            <tr><td colspan="5" class="text-center py-8 text-slate-500">Memuat data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-6 lg:p-8 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100 transition-all hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]" data-aos="fade-up" data-aos-delay="200">
+                
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 border-b border-slate-100 pb-6">
+                    <h2 class="text-xl font-extrabold text-slate-800">Riwayat Pembelian</h2>
+                    
+                    <div class="relative w-full md:w-72">
+                        <input type="text" id="searchHistory" class="appearance-none w-full bg-slate-50 border border-slate-200 text-slate-700 py-2.5 pl-10 pr-4 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-400 transition-all shadow-sm" placeholder="Cari Supplier / Tanggal..." onkeyup="filterTable('searchHistory', 'historyBody')">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse whitespace-nowrap">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-100 text-slate-500">
+                                <th class="py-4 px-4 font-semibold text-sm uppercase tracking-wider rounded-tl-xl">Waktu</th>
+                                <th class="py-4 px-4 font-semibold text-sm uppercase tracking-wider">ID Pembelian</th>
+                                <th class="py-4 px-4 font-semibold text-sm uppercase tracking-wider">Supplier</th>
+                                <th class="py-4 px-4 font-semibold text-sm uppercase tracking-wider">Barang</th>
+                                <th class="py-4 px-4 font-semibold text-sm uppercase tracking-wider">Qty Masuk</th>
+                                <th class="py-4 px-4 font-semibold text-sm uppercase tracking-wider">Harga Beli</th>
+                                <th class="py-4 px-4 font-semibold text-sm uppercase tracking-wider">Total</th>
+                                <th class="py-4 px-4 font-semibold text-sm uppercase tracking-wider text-center rounded-tr-xl">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody" class="text-slate-700 text-sm font-medium">
+                            <tr><td colspan="6" class="text-center py-8 text-slate-500">Memuat riwayat...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div id="modalEditRiwayat" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center transition-opacity opacity-0">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 transform scale-95 transition-transform" id="modalContentRiwayat">
+            
+            <div class="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
+                <h2 class="text-2xl font-extrabold text-slate-800">Edit Riwayat Pembelian</h2>
+                <button type="button" onclick="tutupModalRiwayat()" class="text-slate-400 hover:text-slate-600 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <form id="formEditRiwayat" onsubmit="simpanEditRiwayat(event)">
+                <input type="hidden" id="editRiwayatId">
+                
+                <div class="mb-5">
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Supplier</label>
+                    <input type="text" id="editRiwayatSupplier" class="appearance-none w-full bg-slate-50 border border-slate-200 text-slate-700 py-3 px-4 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-400 transition-all" required>
+                </div>
+                
+                <div class="mb-8">
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Qty Masuk</label>
+                    <input type="number" id="editRiwayatQty" class="appearance-none w-full bg-slate-50 border border-slate-200 text-slate-700 py-3 px-4 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-400 transition-all" required>
+                </div>
+                <div class="mb-8">
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Harga Beli Satuan (Rp)</label>
+                    <input type="number" id="editRiwayatHarga" class="appearance-none w-full bg-slate-50 border border-slate-200 text-slate-700 py-3 px-4 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-400 transition-all" required>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="tutupModalRiwayat()" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-xl transition-colors">Batal</button>
+                    <button type="submit" class="px-5 py-2.5 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white text-sm font-bold rounded-xl shadow-md shadow-rose-200 transition-all">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>AOS.init({ once: true });</script>
+    <script src="js/api.js"></script>
+    <script src="js/stok.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => { 
+            // 1. Inisialisasi User
+            const user = JSON.parse(localStorage.getItem('r22_user')); 
+            if(user){ 
+                document.getElementById('userName').textContent = user.nama; 
+                document.getElementById('userRole').textContent = user.role; 
+                if(document.getElementById('companyName')) {
+                    document.getElementById('companyName').textContent = user.perusahaan || "PT. SINARAPI JATAYU PERMAI";
+                }
+            }
+
+            // 2. Cek Notifikasi Pending
+            try {
+                const pending = await API.request('users/pending');
+                if (pending && pending.length > 0) {
+                    const badge = document.getElementById('notifBadge');
+                    if(badge) badge.classList.remove('hidden');
+                }
+            } catch (e) {}
+
+            // 3. Logika Navbar & Kebab Menu Mobile
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const btnHamburger = document.getElementById('btnHamburger');
+            const btnActionMenu = document.getElementById('btnActionMenu');
+            const actionContainer = document.getElementById('actionContainer');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('-translate-x-full');
+                if (sidebarOverlay.classList.contains('hidden')) {
+                    sidebarOverlay.classList.remove('hidden');
+                    setTimeout(() => sidebarOverlay.classList.remove('opacity-0'), 10);
+                } else {
+                    sidebarOverlay.classList.add('opacity-0');
+                    setTimeout(() => sidebarOverlay.classList.add('hidden'), 300);
+                }
+            }
+            
+            btnHamburger.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+
+            btnActionMenu.addEventListener('click', (e) => {
+                e.stopPropagation();
+                actionContainer.classList.toggle('hidden');
+                actionContainer.classList.toggle('flex');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth < 1024) { 
+                    if (!btnActionMenu.contains(e.target) && !actionContainer.contains(e.target)) {
+                        if (!actionContainer.classList.contains('hidden')) {
+                            actionContainer.classList.add('hidden');
+                            actionContainer.classList.remove('flex');
+                        }
+                    }
+                }
+            });
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 1024) {
+                    sidebar.classList.remove('-translate-x-full');
+                    sidebarOverlay.classList.add('hidden');
+                    sidebarOverlay.classList.add('opacity-0');
+                    
+                    actionContainer.classList.remove('hidden');
+                    actionContainer.classList.add('flex');
+                } else {
+                    sidebar.classList.add('-translate-x-full');
+                    actionContainer.classList.add('hidden');
+                    actionContainer.classList.remove('flex');
+                }
+            });
+        });
+
+        // 4. Perbaikan transisi untuk Modal Bawaan (Tambahan agar smooth animasi munculnya)
+        const originalTutupModalRiwayat = window.tutupModalRiwayat;
+        window.tutupModalRiwayat = function() {
+            const modal = document.getElementById('modalEditRiwayat');
+            const modalContent = document.getElementById('modalContentRiwayat');
+            
+            modal.classList.add('opacity-0');
+            modalContent.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        };
+        
+        // Memodifikasi sedikit cara tampil dari function yg dipanggil oleh baris tabel jika ada
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.attributeName === "class") {
+                    const modal = document.getElementById('modalEditRiwayat');
+                    const modalContent = document.getElementById('modalContentRiwayat');
+                    // Jika js bawaan menghapus 'hidden', kita jalankan transisinya
+                    if (!modal.classList.contains('hidden') && modal.classList.contains('opacity-0')) {
+                        modal.classList.add('flex');
+                        setTimeout(() => {
+                            modal.classList.remove('opacity-0');
+                            modalContent.classList.remove('scale-95');
+                            modalContent.classList.add('scale-100');
+                        }, 10);
+                    }
+                }
+            });
+        });
+        observer.observe(document.getElementById('modalEditRiwayat'), { attributes: true });
+    </script>
+</body>
+</html>

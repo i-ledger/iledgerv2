@@ -1,0 +1,24 @@
+{
+  "name": "R22 NPSO",
+  "short_name": "R22",
+  "description": "Aplikasi Penjualan R22 NPSO",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#db2777",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "r22.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "r22.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R22 NPSO - Laporan Pengiriman</title>
+    
+    <!-- Link CSS Pink Theme Malf -->
+    <link rel="stylesheet" href="css/pink-theme.css">
+    
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        body { 
+            background-color: #f9fafb; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        }
+        .admin-glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(244, 114, 182, 0.2);
+            border-radius: 1rem;
+        }
+        .input-elegant {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            color: #1f2937;
+        }
+        .input-elegant:focus {
+            border-color: #ff4fa3;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 79, 163, 0.1);
+        }
+        .bg-pink-gradient {
+            background: linear-gradient(135deg, #ff4fa3, #d9267a);
+        }
+    </style>
+<link rel="icon" href="r22.png" type="image/png">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="r22.png" type="image/png">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="r22.png" type="image/png">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="r22.png" type="image/png">
+<link rel="manifest" href="manifest.json">
+</head>
+<body class="p-4 md:p-8 text-gray-800">
+
+    <div class="max-w-md mx-auto">
+        <section class="admin-glass-card p-5 space-y-4 shadow-md border-t-4 border-[#ff4fa3]">
+            <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                <h2 class="text-sm font-extrabold text-gray-700 uppercase tracking-wider">Laporan Bukti Pengiriman</h2>
+                <button id="backBtn" class="text-xs font-bold text-gray-400 hover:text-pink-600 transition">← Kembali</button>
+            </div>
+
+            <form id="deliveryForm" class="space-y-4">
+                <input type="hidden" id="idPengiriman">
+                
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Nama Pangkalan Penerima</label>
+                    <input type="text" id="targetPangkalan" class="w-full p-2.5 rounded-lg input-elegant text-xs font-extrabold text-pink-600 bg-pink-50/30" readonly>
+                </div>
+
+                <!-- Input Muatan Fleet Non-3kg -->
+                <div class="space-y-2">
+                    <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider">Konfirmasi Jumlah Muatan Terkirim</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 mb-1 text-center">Bright 5.5kg</label>
+                            <input type="number" id="cyl5_5kg" class="w-full p-2 rounded-lg input-elegant text-xs font-bold text-center" value="0" min="0">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 mb-1 text-center">Tabung 12kg</label>
+                            <input type="number" id="cyl12kg" class="w-full p-2 rounded-lg input-elegant text-xs font-bold text-center" value="0" min="0">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 mb-1 text-center">Tabung 50kg</label>
+                            <input type="number" id="cyl50kg" class="w-full p-2 rounded-lg input-elegant text-xs font-bold text-center" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">Catatan Tambahan Driver</label>
+                    <textarea id="catatanDriver" class="w-full p-2.5 rounded-lg input-elegant text-xs h-16 resize-none" placeholder="Tulis keterangan/kondisi pengiriman jika ada..."></textarea>
+                </div>
+
+                <!-- Kamera Hardware Frame UI -->
+                <div class="space-y-2">
+                    <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider">Ambil Foto Bukti Real-time</label>
+                    <div class="relative w-full aspect-video bg-gray-900 rounded-lg overflow-hidden border border-gray-200 shadow-inner">
+                        <video id="videoFeed" class="w-full h-full object-cover" autoplay playsinline></video>
+                        <canvas id="photoCanvas" class="hidden"></canvas>
+                        <img id="capturedImage" class="hidden w-full h-full object-cover" alt="Preview Bukti">
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <button type="button" id="captureBtn" class="flex-1 py-2 text-xs bg-pink-gradient hover:opacity-90 text-white font-bold rounded-lg transition shadow-sm">Ambil Foto</button>
+                        <button type="button" id="retakeBtn" class="hidden flex-1 py-2 text-xs bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg transition shadow-sm">Foto Ulang</button>
+                    </div>
+                </div>
+
+                <!-- Bar Status Koordinat GPS -->
+                <div class="bg-gray-50 p-2.5 rounded-lg flex items-center justify-between text-[11px] border border-gray-100">
+                    <span class="font-bold text-gray-400 uppercase tracking-wider">Koordinat GPS:</span>
+                    <span id="geoStatus" class="font-mono text-yellow-600 font-bold animate-pulse">Mencari Posisi GPS Driver...</span>
+                </div>
+
+                <button type="submit" id="submitReportBtn" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-extrabold text-xs uppercase tracking-widest shadow transition">
+                    Kirim Laporan Pengiriman
+                </button>
+            </form>
+        </section>
+    </div>
+
+    <!-- Scripts Loader -->
+    <script src="js/api.js"></script>
+    <script src="js/reportdriver.js"></script>
+</body>
+</html>
