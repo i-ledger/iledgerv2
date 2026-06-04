@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbzMOgyJPrWHOzLvRN3EUCBicBHq7sQn5GmUM-Co0iy1kPidKz7hJHRmXLNPnGRluVL-/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyIyUsCS9dSW5qHaIu0FH5tP7Rw4_hS04D2LOnMb57in8aGPjd8xxTU84fOL9zQe75Z/exec";
 
 const API = {
     request: async function(action, payload = {}) {
