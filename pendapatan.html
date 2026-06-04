@@ -59,10 +59,8 @@
 </head>
 <body class="flex h-screen overflow-hidden text-slate-800">
     
-    <!-- Sidebar Overlay Mobile -->
     <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-30 hidden opacity-0 transition-opacity duration-300 lg:hidden"></div>
 
-    <!-- Sidebar -->
     <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-white border-r border-slate-100 shadow-[4px_0_24px_rgba(0,0,0,0.02)] transform -translate-x-full lg:translate-x-0 lg:static lg:flex flex-col transition-transform duration-300 ease-in-out">
         
         <div class="h-20 flex items-center justify-center border-b border-slate-100">
@@ -127,10 +125,8 @@
         </nav>
     </aside>
 
-    <!-- Main Content Area -->
     <main class="flex-1 flex flex-col min-w-0 bg-[#F8FAFC]">
         
-        <!-- Header -->
         <header class="h-20 bg-white border-b border-slate-200 px-6 lg:px-10 flex justify-between items-center z-20 sticky top-0">
             <div class="flex items-center gap-4">
                 <button id="btnHamburger" class="lg:hidden p-2 -ml-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
@@ -168,10 +164,8 @@
             </div>
         </header>
 
-        <!-- Konten Utama -->
         <div class="flex-1 overflow-y-auto p-6 lg:p-10 scroll-smooth">
             
-            <!-- Cards Ringkasan Pendapatan -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="bg-white rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100 flex items-center justify-between" data-aos="fade-up">
                     <div>
@@ -202,15 +196,13 @@
                 </div>
             </div>
 
-            <!-- Tabel & Input Form Jurnal -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
-                <!-- Sisi Kiri: Tabel Riwayat Dinamis -->
                 <div class="lg:col-span-2 bg-white rounded-3xl p-6 lg:p-8 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100">
                     <div class="flex justify-between items-center mb-6 border-b border-slate-50 pb-4">
                         <div>
                             <h3 class="text-lg font-extrabold text-slate-800">Riwayat Mutasi Pendapatan</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">Daftar penerimaan kas dan invoice klaim riil</p>
+                            <p class="text-xs text-slate-400 mt-0.5">Daftar kas masuk berdasarkan log aktivitas pelapor</p>
                         </div>
                     </div>
                     
@@ -220,20 +212,18 @@
                                 <tr class="text-xs font-bold uppercase text-slate-400 border-b border-slate-100">
                                     <th class="py-3 px-4">ID</th>
                                     <th class="py-3 px-4">Timestamp</th>
-                                    <th class="py-3 px-4">Nama Sumber</th>
-                                    <th class="py-3 px-4">Uraian / Memo</th>
+                                    <th class="py-3 px-4">Nama Pelapor</th>
+                                    <th class="py-3 px-4">Sumber Pendapatan (Uraian)</th>
                                     <th class="py-3 px-4 text-right">Jumlah</th>
                                     <th class="py-3 px-4 text-center">Bukti</th>
                                     <th class="py-3 px-4 text-center">Aksi</th>
                                 </tr>
                             </thead>
-                            <!-- Data Bodong Dihapus, dirender dinamis lewat JS -->
                             <tbody id="tabelBody" class="divide-y divide-slate-50"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- Sisi Kanan: Input Form Kontrol Interaktif -->
                 <div id="formContainer" class="bg-white rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100 transition-all duration-300 h-fit sticky top-24">
                     <h3 id="formTitle" class="text-base font-extrabold text-slate-800 mb-4 flex items-center gap-2">
                         Catat Pendapatan Baru
@@ -241,16 +231,16 @@
                     
                     <form id="formPendapatan" class="space-y-4">
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Nama / Sumber Pendapatan</label>
-                            <input type="text" id="nama" placeholder="Contoh: Invoice #INV-01 atau Klaim Muatan" required class="w-full bg-slate-50 border border-slate-200 py-2.5 px-3 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Nama Pelapor / Admin</label>
+                            <input type="text" id="nama" placeholder="Contoh: Rizaldy, Cecep, Jaja" required class="w-full bg-slate-50 border border-slate-200 py-2.5 px-3 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Sumber Pendapatan / Uraian</label>
+                            <textarea id="uraian" placeholder="Contoh: Klaim Muatan Truk, Invoice #INV-01, Subsidi BBM" rows="3" required class="w-full bg-slate-50 border border-slate-200 py-2.5 px-3 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"></textarea>
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Nominal (Rp)</label>
                             <input type="number" id="nominal" placeholder="Contoh: 12500000" required class="w-full bg-slate-50 border border-slate-200 py-2.5 px-3 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Keterangan / Uraian</label>
-                            <textarea id="uraian" placeholder="Tulis detail catatan transaksi di sini..." rows="3" required class="w-full bg-slate-50 border border-slate-200 py-2.5 px-3 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"></textarea>
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Bukti Transfer (Opsional)</label>
@@ -272,7 +262,6 @@
         </div>
     </main>
 
-    <!-- Script Utama (AOS & Logika Dinamis) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script>AOS.init({ once: true });</script>
     
@@ -281,7 +270,6 @@
         let currentEditId = null;
         let globalDataCache = []; 
 
-        // Menu Dropdown & Responsive Nav Controls
         function toggleDropdown(dropdownId, arrowId) {
             const dropdown = document.getElementById(dropdownId);
             const arrow = document.getElementById(arrowId);
@@ -290,7 +278,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Mobile Menu & Overlay Layout Interactivity
             const btnHamburger = document.getElementById('btnHamburger');
             const sidebar = document.getElementById('sidebar');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
@@ -325,7 +312,6 @@
                 });
             }
 
-            // Load Data Profil Pengguna dari LocalStorage
             const user = JSON.parse(localStorage.getItem('r22_user'));
             if(user){
                 document.getElementById('userName').textContent = user.nama;
@@ -335,14 +321,12 @@
                 }
             }
 
-            // Jalankan autentikasi terpusat & tarik data server
             if(typeof API !== 'undefined' && API.checkAuth) {
                 API.checkAuth();
             }
             loadData();
         });
 
-        // Event handler handling Form Submit
         document.getElementById('formPendapatan').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -355,8 +339,8 @@
             
             const payload = {
                 nama: document.getElementById('nama').value,
-                nominal: document.getElementById('nominal').value,
                 uraian: document.getElementById('uraian').value,
+                nominal: document.getElementById('nominal').value,
                 fileData: null,
                 fileName: null,
                 fileType: null
@@ -376,7 +360,6 @@
             }
         });
 
-        // Eksekusi penembakan data ke API terpusat
         async function executeSubmit(payload) {
             const action = isEditMode ? 'pendapatan/update' : 'pendapatan/create';
             const btn = document.getElementById('btnSubmit');
@@ -402,7 +385,6 @@
             }
         }
 
-        // Fetch data dan render ke dalam tabel UI
         async function loadData() {
             const tbody = document.getElementById('tabelBody');
             if (!tbody) return;
@@ -421,7 +403,6 @@
                     return;
                 }
                 
-                // Kalkulasi total akumulasi nominal untuk widget atas
                 let totalNominalBulanIni = 0;
                 document.getElementById('totalEntries').textContent = `${data.length} Entri`;
 
@@ -460,7 +441,6 @@
                     tbody.appendChild(tr);
                 });
 
-                // Update teks ringkasan pendapatan bulan ini secara dinamis
                 document.getElementById('incomeMonth').textContent = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(totalNominalBulanIni);
 
             } catch (error) {
@@ -468,7 +448,6 @@
             }
         }
 
-        // Set form ke mode edit dengan visual feedback senada
         function triggerEdit(idPembelian) {
             const item = globalDataCache.find(x => x.idPembelian === idPembelian);
             if (!item) return;
@@ -494,13 +473,12 @@
             if (btnBatal) btnBatal.classList.remove('hidden');
 
             document.getElementById('nama').value = item.nama;
-            document.getElementById('nominal').value = item.nominal;
             document.getElementById('uraian').value = item.uraian;
+            document.getElementById('nominal').value = item.nominal;
             
             if (formContainer) formContainer.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Reset form kembali ke mode create semula
         function resetFormMode() {
             isEditMode = false;
             currentEditId = null;
@@ -526,7 +504,6 @@
             document.getElementById('formPendapatan').reset();
         }
 
-        // Trigger hapus data memakai genericDelete bawaan api.js
         async function triggerDelete(idPembelian) {
             if (typeof genericDelete === 'function') {
                 await genericDelete('pendapatan/delete', idPembelian, function() {
