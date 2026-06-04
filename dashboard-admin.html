@@ -15,7 +15,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
-    <link rel="icon" href="r22.png" type="image/png">
+    <link class="rounded-md" rel="icon" href="r22.png" type="image/png">
     <link rel="manifest" href="manifest.json">
 
     <style>
@@ -41,12 +41,12 @@
         }
 
         .sidebar-link.active {
-            background-color: #FFF1F2;
-            color: #E11D48;
+            background-color: #EFF6FF; /* Biru muda transparan */
+            color: #1D4ED8; /* Biru tegas */
             font-weight: 700;
         }
         .sidebar-link.active svg {
-            color: #E11D48;
+            color: #1D4ED8;
         }
 
         .no-scrollbar::-webkit-scrollbar {
@@ -65,18 +65,18 @@
     <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-white border-r border-slate-100 shadow-[4px_0_24px_rgba(0,0,0,0.02)] transform -translate-x-full lg:translate-x-0 lg:static lg:flex flex-col transition-transform duration-300 ease-in-out">
         
         <div class="h-20 flex items-center justify-center border-b border-slate-100">
-            <h2 class="text-2xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-pink-600">
+            <h2 class="text-2xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-sky-400">
                 iledger
             </h2>
         </div>
 
         <div class="px-6 py-8 border-b border-slate-100 flex flex-col items-center text-center bg-slate-50/50">
             <div class="w-20 h-20 rounded-full bg-white border-4 border-white shadow-md flex items-center justify-center mb-4 overflow-hidden relative group cursor-pointer">
-                <svg class="w-10 h-10 text-slate-300 group-hover:text-rose-400 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                <svg class="w-10 h-10 text-slate-300 group-hover:text-blue-500 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
             </div>
             <h3 class="text-base font-extrabold text-slate-800 leading-tight mb-1" id="userName">Admin Ledger</h3>
-            <p class="text-[10px] font-bold text-rose-500 uppercase tracking-widest mb-3 line-clamp-1" id="companyName">Memuat Entitas...</p>
-            <span class="text-[10px] font-bold text-rose-700 bg-rose-100 border border-rose-200 px-3 py-1 rounded-full uppercase tracking-wider shadow-sm" id="userRole">Finance Admin</span>
+            <p class="text-[10px] font-bold text-sky-600 uppercase tracking-widest mb-3 line-clamp-1" id="companyName">Memuat Entitas...</p>
+            <span class="text-[10px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full uppercase tracking-wider shadow-sm" id="userRole">Finance Admin</span>
         </div>
 
         <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto no-scrollbar">
@@ -104,7 +104,7 @@
         <header class="h-20 bg-white/80 backdrop-blur-lg border-b border-slate-200 px-6 lg:px-10 flex justify-between items-center z-20 sticky top-0">
             
             <div class="flex items-center gap-4">
-                <button id="btnHamburger" class="lg:hidden p-2 -ml-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors">
+                <button id="btnHamburger" class="lg:hidden p-2 -ml-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
                 <div>
@@ -113,24 +113,24 @@
             </div>
             
             <div class="relative flex items-center">
-                <button id="btnActionMenu" class="lg:hidden p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors">
+                <button id="btnActionMenu" class="lg:hidden p-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
                 </button>
 
                 <div id="actionContainer" class="hidden absolute right-0 top-14 w-56 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-slate-100 rounded-2xl p-2 flex-col gap-1 z-50 lg:static lg:flex lg:flex-row lg:bg-transparent lg:shadow-none lg:border-none lg:p-0 lg:w-auto lg:items-center lg:gap-2">
                     
-                    <a href="users.html" class="flex items-center gap-3 px-4 py-2.5 lg:p-2.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all" title="Data Pengguna">
+                    <a href="users.html" class="flex items-center gap-3 px-4 py-2.5 lg:p-2.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all" title="Data Pengguna">
                         <svg class="w-5 h-5 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                         <span class="lg:hidden text-sm font-semibold">Data Pengguna</span>
                     </a>
                     
-                    <a href="approval.html" class="relative flex items-center gap-3 px-4 py-2.5 lg:p-2.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all" title="Approval Akun">
+                    <a href="approval.html" class="relative flex items-center gap-3 px-4 py-2.5 lg:p-2.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all" title="Approval Akun">
                         <svg class="w-5 h-5 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                        <span id="notifBadge" class="absolute top-2.5 left-7 lg:top-1.5 lg:right-1.5 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full hidden animate-pulse"></span>
+                        <span id="notifBadge" class="absolute top-2.5 left-7 lg:top-1.5 lg:right-1.5 w-2.5 h-2.5 bg-blue-500 border-2 border-white rounded-full hidden animate-pulse"></span>
                         <span class="lg:hidden text-sm font-semibold">Approval Akun</span>
                     </a>
                     
-                    <a href="setting.html" class="flex items-center gap-3 px-4 py-2.5 lg:p-2.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all" title="Pengaturan">
+                    <a href="setting.html" class="flex items-center gap-3 px-4 py-2.5 lg:p-2.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all" title="Pengaturan">
                         <svg class="w-5 h-5 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                         <span class="lg:hidden text-sm font-semibold">Pengaturan</span>
                     </a>
@@ -151,36 +151,36 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="bg-white rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 flex items-center justify-between group" data-aos="fade-up" data-aos-delay="100">
                     <div>
-                        <p class="text-sm font-semibold text-slate-500 mb-2 group-hover:text-emerald-500 transition-colors">Total Pendapatan</p>
+                        <p class="text-sm font-semibold text-slate-500 mb-2 group-hover:text-blue-600 transition-colors">Total Pendapatan</p>
                         <div class="flex items-baseline gap-1">
                             <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight" id="totalPendapatan">Rp 0</h2>
                         </div>
                     </div>
-                    <div class="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform">
+                    <div class="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                     </div>
                 </div>
                 
                 <div class="bg-white rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 flex items-center justify-between group" data-aos="fade-up" data-aos-delay="200">
                     <div>
-                        <p class="text-sm font-semibold text-slate-500 mb-2 group-hover:text-rose-500 transition-colors">Total Pengeluaran</p>
+                        <p class="text-sm font-semibold text-slate-500 mb-2 group-hover:text-sky-500 transition-colors">Total Pengeluaran</p>
                         <div class="flex items-baseline gap-1">
                             <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight" id="totalPengeluaran">Rp 0</h2>
                         </div>
                     </div>
-                    <div class="w-14 h-14 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-500 group-hover:scale-110 transition-transform">
+                    <div class="w-14 h-14 rounded-2xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-500 group-hover:scale-110 transition-transform">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6"></path></svg>
                     </div>
                 </div>
                 
-                <div class="bg-gradient-to-br from-rose-50 to-pink-100 rounded-3xl p-6 shadow-md border border-rose-100 hover:shadow-lg transition-all duration-300 flex items-center justify-between group" data-aos="fade-up" data-aos-delay="300">
+                <div class="bg-gradient-to-br from-slate-900 to-blue-950 rounded-3xl p-6 shadow-md border border-slate-800 hover:shadow-lg transition-all duration-300 flex items-center justify-between group" data-aos="fade-up" data-aos-delay="300">
                     <div>
-                        <p class="text-sm font-bold text-rose-700 mb-2 uppercase tracking-wider">Laba / Rugi Bersih</p>
+                        <p class="text-sm font-bold text-sky-300 mb-2 uppercase tracking-wider">Laba / Rugi Bersih</p>
                         <div class="flex items-baseline gap-1">
-                            <h2 class="text-3xl font-black text-rose-950 tracking-tight" id="labaBersih">Rp 0</h2>
+                            <h2 class="text-3xl font-black text-white tracking-tight" id="labaBersih">Rp 0</h2>
                         </div>
                     </div>
-                    <div class="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-rose-600 group-hover:scale-110 transition-transform">
+                    <div class="w-14 h-14 rounded-2xl bg-white/10 shadow-sm flex items-center justify-center text-sky-300 group-hover:scale-110 transition-transform">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
                 </div>
@@ -196,11 +196,11 @@
                                 <p class="text-xs font-medium text-slate-400 mt-0.5">Perbandingan performa pendapatan vs pengeluaran bulanan</p>
                             </div>
                             <div class="flex gap-2">
-                                <select id="filterBulan" onchange="applyFinanceFilter()" class="bg-slate-50 border border-slate-200 text-slate-700 py-1.5 px-3 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/20">
+                                <select id="filterBulan" onchange="applyFinanceFilter()" class="bg-slate-50 border border-slate-200 text-slate-700 py-1.5 px-3 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                                     <option value="ALL">Semua Bulan</option>
                                     <option value="01">Januari</option><option value="02">Februari</option><option value="03">Maret</option>
                                 </select>
-                                <select id="filterTahun" onchange="applyFinanceFilter()" class="bg-slate-50 border border-slate-200 text-slate-700 py-1.5 px-3 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/20">
+                                <select id="filterTahun" onchange="applyFinanceFilter()" class="bg-slate-50 border border-slate-200 text-slate-700 py-1.5 px-3 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                                     <option value="2026">2026</option>
                                 </select>
                             </div>
@@ -213,7 +213,7 @@
                     <div class="bg-white rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-base font-bold text-slate-800">Struktur Pos Laba Rugi</h3>
-                            <a href="laba-rugi.html" class="text-xs font-bold text-rose-600 hover:underline">Lihat Detail Laporan &rarr;</a>
+                            <a href="laba-rugi.html" class="text-xs font-bold text-blue-600 hover:underline">Lihat Detail Laporan &rarr;</a>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-sm">
@@ -229,14 +229,14 @@
                                     <tr>
                                         <td class="py-3 px-2 text-slate-500">4-1000</td>
                                         <td class="py-3 px-2 text-slate-900">Pendapatan Operasional</td>
-                                        <td class="py-3 px-2"><span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md text-xs">Pendapatan</span></td>
-                                        <td class="py-3 px-2 text-right text-emerald-600">Rp 0</td>
+                                        <td class="py-3 px-2"><span class="text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md text-xs">Pendapatan</span></td>
+                                        <td class="py-3 px-2 text-right text-blue-600">Rp 0</td>
                                     </tr>
                                     <tr>
                                         <td class="py-3 px-2 text-slate-500">5-1000</td>
                                         <td class="py-3 px-2 text-slate-900">Harga Pokok Penjualan</td>
-                                        <td class="py-3 px-2"><span class="text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md text-xs">Beban HPP</span></td>
-                                        <td class="py-3 px-2 text-right text-rose-600">Rp 0</td>
+                                        <td class="py-3 px-2"><span class="text-sky-600 bg-sky-50 px-2 py-0.5 rounded-md text-xs">Beban HPP</span></td>
+                                        <td class="py-3 px-2 text-right text-sky-600">Rp 0</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -247,19 +247,19 @@
                 <div class="space-y-6">
                     <div class="bg-white rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100" data-aos="fade-up" data-aos-delay="500">
                         <h3 class="text-base font-extrabold text-slate-800 mb-1 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                             Upload Transaksi Cepat
                         </h3>
                         <p class="text-xs text-slate-400 mb-4">Dukung file mutasi bank .csv atau e-statement .pdf</p>
                         
-                        <div class="border-2 border-dashed border-slate-200 hover:border-rose-400 rounded-2xl p-6 text-center cursor-pointer transition-colors bg-slate-50/50 group" id="dropzoneTransaksi">
-                            <svg class="w-8 h-8 text-slate-300 group-hover:text-rose-500 mx-auto mb-2 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                        <div class="border-2 border-dashed border-slate-200 hover:border-blue-400 rounded-2xl p-6 text-center cursor-pointer transition-colors bg-slate-50/50 group" id="dropzoneTransaksi">
+                            <svg class="w-8 h-8 text-slate-300 group-hover:text-blue-500 mx-auto mb-2 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                             <span class="block text-xs font-bold text-slate-700 mb-0.5">Pilih File dokumen</span>
                             <span class="text-[10px] text-slate-400 block">Maksimal ukuran file 10MB</span>
                             <input type="file" id="fileTransaksiInput" class="hidden" accept=".csv,.xlsx,.pdf">
                         </div>
 
-                        <button onclick="prosesUploadCepat()" class="w-full mt-4 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-sm transition-all transform active:scale-[0.98]">
+                        <button onclick="prosesUploadCepat()" class="w-full mt-4 bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-700 hover:to-sky-600 text-white font-bold py-2.5 rounded-xl text-xs shadow-sm transition-all transform active:scale-[0.98]">
                             Mulai Parsing Data
                         </button>
                     </div>
@@ -272,7 +272,7 @@
                         <form id="formQuickPos" class="space-y-3" onsubmit="handleTambahPos(event)">
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Tipe Akun Laba Rugi</label>
-                                <select required class="w-full bg-slate-50 border border-slate-200 py-2 px-3 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/20">
+                                <select required class="w-full bg-slate-50 border border-slate-200 py-2 px-3 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                                     <option value="4">Pendapatan (Income)</option>
                                     <option value="5">Beban Pokok Penjualan (HPP)</option>
                                     <option value="6">Beban Operasional (Expense)</option>
@@ -313,12 +313,10 @@
                 }
             }
 
-            // Inisialisasi Grafik Chart Keuangan Reworked (Pendapatan vs Pengeluaran)
             initFinanceChart();
             loadDashboardLedgerData();
         });
 
-        // Simulasi data keuangan awal
         function loadDashboardLedgerData() {
             document.getElementById('totalPendapatan').textContent = "Rp 145.230.000";
             document.getElementById('totalPengeluaran').textContent = "Rp 88.450.000";
@@ -335,16 +333,16 @@
                         {
                             label: 'Pendapatan',
                             data: [65000000, 78000000, 92000000, 81000000, 110000000, 145230000],
-                            borderColor: '#10B981',
-                            backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                            borderColor: '#2563EB', /* Biru Utama */
+                            backgroundColor: 'rgba(37, 99, 235, 0.05)',
                             tension: 0.4,
                             fill: true
                         },
                         {
                             label: 'Pengeluaran',
                             data: [40000000, 48000000, 52000000, 61000000, 70000000, 88450000],
-                            borderColor: '#F43F5E',
-                            backgroundColor: 'rgba(244, 63, 94, 0.05)',
+                            borderColor: '#0EA5E9', /* Biru Muda / Sky */
+                            backgroundColor: 'rgba(14, 165, 233, 0.05)',
                             tension: 0.4,
                             fill: true
                         }
@@ -359,12 +357,10 @@
             });
         }
 
-        // Action Handlers
         function applyFinanceFilter() {
             Swal.fire({ icon: 'success', title: 'Filter Diperbarui', text: 'Menampilkan data ledger berdasarkan periode yang dipilih.', timer: 1500, showConfirmButton: false });
         }
 
-        // Trigger Upload Input
         const dropzone = document.getElementById('dropzoneTransaksi');
         const fileInput = document.getElementById('fileTransaksiInput');
         dropzone.addEventListener('click', () => fileInput.click());
@@ -385,7 +381,7 @@
 
         function handleTambahPos(e) {
             e.preventDefault();
-            Swal.fire({ icon: 'success', title: 'Pos Akun Berhasil Ditambahkan', text: 'Kategori akun keuangan siap digunakan di pencatatan jurnal.', confirmButtonColor: '#E11D48' });
+            Swal.fire({ icon: 'success', title: 'Pos Akun Berhasil Ditambahkan', text: 'Kategori akun keuangan siap digunakan di pencatatan jurnal.', confirmButtonColor: '#2563EB' });
             document.getElementById('formQuickPos').reset();
         }
     </script>
