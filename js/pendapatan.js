@@ -12,6 +12,7 @@
     loadData();
   });
 
+  // Event handler handling Form Submit
   document.getElementById('formPendapatan').addEventListener('submit', async function(e) {
     e.preventDefault();
     
@@ -20,7 +21,7 @@
     btn.innerText = "Memproses...";
     
     const fileInput = document.getElementById('buktiTransfer');
-    const file = fileInput.files[0];
+    const file = fileInput ? fileInput.files[0] : null;
     
     const payload = {
       nama: document.getElementById('nama').value,
@@ -45,27 +46,40 @@
     }
   });
 
+  // Eksekusi penembakan data ke API terpusat
   async function executeSubmit(payload) {
     const action = isEditMode ? 'pendapatan/update' : 'pendapatan/create';
+    const btn = document.getElementById('btnSubmit');
     if (isEditMode) payload.idPembelian = currentEditId;
     
     try {
       // Menembak terpusat ke API.request (otomatis menyuntikkan r22_token di payload)
       await API.request(action, payload);
       
-      Swal.fire({ icon: 'success', title: 'Berhasil!', text: isEditMode ? 'Data berhasil diperbarui.' : 'Data pendapatan berhasil disimpan.', confirmButtonColor: '#ff4fa3' });
+      Swal.fire({ 
+        icon: 'success', 
+        title: 'Berhasil!', 
+        text: isEditMode ? 'Data berhasil diperbarui.' : 'Data pendapatan berhasil disimpan.', 
+        confirmButtonColor: '#2563EB' 
+      });
+      
       resetFormMode();
       loadData();
     } catch (error) {
       // Error alert otomatis ditangani oleh interseptor di api.js
-      btn.disabled = false;
-      btn.innerText = isEditMode ? "Update Pendapatan" : "Simpan Pendapatan";
+      if (btn) {
+        btn.disabled = false;
+        btn.innerText = isEditMode ? "Update Pendapatan" : "Simpan Pendapatan";
+      }
     }
   }
 
+  // Fetch data dan render ke dalam tabel UI
   async function loadData() {
     const tbody = document.getElementById('tabelBody');
-    tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-4 text-center text-gray-500">Memuat data...</td></tr>`;
+    if (!tbody) return;
+    
+    tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-6 text-center text-xs font-semibold text-slate-400">Memuat data ritme kas...</td></tr>`;
     
     try {
       const data = await API.request('pendapatan/get');
@@ -73,38 +87,48 @@
       globalDataCache = data;
       
       if (!data || data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-4 text-center text-gray-500">Belum ada data riwayat pendapatan.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-center text-xs font-semibold text-slate-400">Belum ada data riwayat pendapatan.</td></tr>`;
         return;
       }
       
       data.forEach(function(item) {
         const tr = document.createElement('tr');
-        const formattedNominal = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(item.nominal);
+        tr.className = "hover:bg-slate-50/80 transition-colors border-b border-slate-50 text-slate-600 font-medium";
         
-        let linkBukti = "-";
+        const formattedNominal = new Intl.NumberFormat('id-ID', { 
+          style: 'currency', 
+          currency: 'IDR', 
+          minimumFractionDigits: 0 
+        }).format(item.nominal);
+        
+        let linkBukti = `<span class="text-xs text-slate-400 font-normal">-</span>`;
         if (item.buktiTransfer && item.buktiTransfer !== "-") {
-          linkBukti = `<a href="${item.buktiTransfer}" target="_blank" class="text-blue-600 hover:underline font-medium">Lihat File</a>`;
+          linkBukti = `<a href="${item.buktiTransfer}" target="_blank" class="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 hover:underline font-bold">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+            Lihat File
+          </a>`;
         }
 
         tr.innerHTML = `
-          <td class="px-4 py-3 font-mono text-xs text-gray-600">${item.idPembelian}</td>
-          <td class="px-4 py-3 text-gray-500 text-xs">${item.timestamp}</td>
-          <td class="px-4 py-3 font-semibold text-gray-800">${item.nama}</td>
-          <td class="px-4 py-3 text-gray-600">${item.uraian}</td>
-          <td class="px-4 py-3 text-green-600 font-bold">${formattedNominal}</td>
-          <td class="px-4 py-3">${linkBukti}</td>
-          <td class="px-4 py-3 text-center space-x-1 whitespace-nowrap">
-            <button onclick="triggerEdit('${item.idPembelian}')" class="bg-amber-500 hover:bg-amber-600 text-white text-xs py-1 px-2.5 rounded shadow-sm font-medium">Edit</button>
-            <button onclick="triggerDelete('${item.idPembelian}')" class="bg-rose-500 hover:bg-rose-600 text-white text-xs py-1 px-2.5 rounded shadow-sm font-medium">Hapus</button>
+          <td class="py-4 px-4 font-mono text-[11px] text-slate-400 font-bold">#${item.idPembelian}</td>
+          <td class="py-4 px-4 text-xs text-slate-400 font-normal">${item.timestamp}</td>
+          <td class="py-4 px-4 text-slate-800 font-extrabold text-xs max-w-[140px] truncate">${item.nama}</td>
+          <td class="py-4 px-4 text-xs text-slate-500 max-w-[180px] truncate">${item.uraian}</td>
+          <td class="py-4 px-4 text-right text-emerald-600 font-extrabold">${formattedNominal}</td>
+          <td class="py-4 px-4 text-center">${linkBukti}</td>
+          <td class="py-4 px-4 text-center space-x-1.5 whitespace-nowrap">
+            <button onclick="triggerEdit('${item.idPembelian}')" class="bg-amber-50 hover:bg-amber-100 text-amber-700 text-[11px] py-1.5 px-3 rounded-xl font-bold transition-colors">Edit</button>
+            <button onclick="triggerDelete('${item.idPembelian}')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 text-[11px] py-1.5 px-3 rounded-xl font-bold transition-colors">Hapus</button>
           </td>
         `;
         tbody.appendChild(tr);
       });
     } catch (error) {
-      tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-4 text-center text-red-500">Gagal memuat data riwayat dari server.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-6 text-center text-xs font-bold text-rose-500">Gagal memuat data riwayat dari server.</td></tr>`;
     }
   }
 
+  // Set form ke mode edit dengan visual feedback senada
   function triggerEdit(idPembelian) {
     const item = globalDataCache.find(x => x.idPembelian === idPembelian);
     if (!item) return;
@@ -112,40 +136,65 @@
     isEditMode = true;
     currentEditId = idPembelian;
 
-    document.getElementById('formTitle').innerText = `✏️ Edit Pendapatan (${idPembelian})`;
-    document.getElementById('formContainer').classList.replace('border-blue-600', 'border-amber-500');
-    document.getElementById('btnSubmit').innerText = "Update Pendapatan";
-    document.getElementById('btnSubmit').classList.replace('bg-blue-600', 'bg-amber-500');
-    document.getElementById('btnSubmit').classList.replace('hover:bg-blue-700', 'hover:bg-amber-600');
-    document.getElementById('btnBatal').classList.remove('hidden');
+    // Sinkronisasi komponen form container & title
+    const formTitle = document.getElementById('formTitle');
+    const formContainer = document.getElementById('formContainer');
+    const btnSubmit = document.getElementById('btnSubmit');
+    const btnBatal = document.getElementById('btnBatal');
 
+    if (formTitle) formTitle.innerHTML = `<span class="text-amber-500">✏️</span> Edit Pendapatan <span class="font-mono text-xs text-amber-600">(${idPembelian})</span>`;
+    if (formContainer) {
+      formContainer.classList.remove('border-slate-100');
+      formContainer.classList.add('border-amber-400', 'shadow-[0_4px_20px_rgba(245,158,11,0.1)]');
+    }
+    if (btnSubmit) {
+      btnSubmit.innerText = "Update Pendapatan";
+      btnSubmit.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+      btnSubmit.classList.add('bg-amber-500', 'hover:bg-amber-600');
+    }
+    if (btnBatal) btnBatal.classList.remove('hidden');
+
+    // Mapping values ke field form
     document.getElementById('nama').value = item.nama;
     document.getElementById('nominal').value = item.nominal;
     document.getElementById('uraian').value = item.uraian;
     
-    document.getElementById('formContainer').scrollIntoView({ behavior: 'smooth' });
+    if (formContainer) formContainer.scrollIntoView({ behavior: 'smooth' });
   }
 
+  // Reset form kembali ke mode create semula
   function resetFormMode() {
     isEditMode = false;
     currentEditId = null;
 
-    document.getElementById('formTitle').innerText = "Input Pendapatan Baru";
-    document.getElementById('formContainer').classList.replace('border-amber-500', 'border-blue-600');
-    document.getElementById('btnSubmit').innerText = "Simpan Pendapatan";
-    document.getElementById('btnSubmit').classList.replace('bg-amber-500', 'bg-blue-600');
-    document.getElementById('btnSubmit').classList.replace('hover:bg-amber-600', 'hover:bg-blue-700');
-    document.getElementById('btnBatal').classList.add('hidden');
+    const formTitle = document.getElementById('formTitle');
+    const formContainer = document.getElementById('formContainer');
+    const btnSubmit = document.getElementById('btnSubmit');
+    const btnBatal = document.getElementById('btnBatal');
+
+    if (formTitle) formTitle.innerText = "Catat Pendapatan Baru";
+    if (formContainer) {
+      formContainer.classList.remove('border-amber-400', 'shadow-[0_4px_20px_rgba(245,158,11,0.1)]');
+      formContainer.classList.add('border-slate-100');
+    }
+    if (btnSubmit) {
+      btnSubmit.innerText = "Simpan Data Jurnal Pendapatan";
+      btnSubmit.disabled = false;
+      btnSubmit.classList.remove('bg-amber-500', 'hover:bg-amber-600');
+      btnSubmit.classList.add('bg-blue-600', 'hover:bg-blue-700');
+    }
+    if (btnBatal) btnBatal.classList.add('hidden');
     
     document.getElementById('formPendapatan').reset();
-    document.getElementById('btnSubmit').disabled = false;
   }
 
+  // Trigger hapus data memakai genericDelete bawaan api.js
   async function triggerDelete(idPembelian) {
-    // Memanfaatkan fungsi genericDelete bawaan api.js kamu agar standarisasi animasi seragam
-    await genericDelete('pendapatan/delete', idPembelian, function() {
-      if(currentEditId === idPembelian) resetFormMode();
-      loadData();
-    });
+    if (typeof genericDelete === 'function') {
+      await genericDelete('pendapatan/delete', idPembelian, function() {
+        if(currentEditId === idPembelian) resetFormMode();
+        loadData();
+      });
+    }
   }
 </script>
