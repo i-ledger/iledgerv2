@@ -1,0 +1,245 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+    /* Premium SaaS Color Palette (Elegant White & Rose/Pink) */
+    --primary: #E11D48;      /* Rose 600 - Profesional Pink */
+    --secondary: #F43F5E;    /* Rose 500 */
+    --accent: #FDA4AF;       /* Rose 300 */
+    --bg-light: #FFFBFC;     /* Blush White - Latar belakang putih dengan rona pink sangat halus */
+    --surface: #FFFFFF;      /* Pure White - Putih bersih elegan untuk elemen utama */
+    --text-dark: #2A1F22;    /* Warm Dark - Teks kontras tinggi dengan sentuhan hangat */
+    --text-gray: #887A7D;    /* Warm Gray - Teks sekunder yang lebih lembut */
+    --border-color: #FBEAEC; /* Soft Blush Border - Border halus bernuansa pink */
+    
+    /* Status Colors */
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    overflow-x: hidden;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ====================================================================
+   ELEGANT CUSTOM SCROLLBAR
+   ==================================================================== */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #E8D5D8; /* Warm pinkish gray */
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #D1B8BC;
+}
+
+/* ====================================================================
+   CARDS & PANELS (SaaS Style, Clean & Minimal)
+   ==================================================================== */
+.glass-card {
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: 1.25rem; /* 20px */
+    /* Menambahkan sedikit rona pink pada bayangan agar lebih elegan */
+    box-shadow: 0 4px 24px -4px rgba(225, 29, 72, 0.03), 0 2px 8px -2px rgba(225, 29, 72, 0.02);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+    box-shadow: 0 12px 32px -8px rgba(225, 29, 72, 0.08), 0 4px 12px -4px rgba(225, 29, 72, 0.04);
+    transform: translateY(-2px);
+}
+
+.glass-panel {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-right: 1px solid var(--border-color);
+}
+
+/* ====================================================================
+   GRADIENTS UTILITY
+   ==================================================================== */
+.bg-pink-gradient {
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+}
+
+.text-pink-gradient {
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ====================================================================
+   INPUTS (FORM ELEGANT)
+   ==================================================================== */
+.input-elegant {
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    transition: all 0.2s ease;
+    background: var(--surface);
+    color: var(--text-dark);
+    font-size: 0.875rem;
+    font-weight: 500;
+    width: 100%;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.01);
+}
+
+.input-elegant:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.1);
+    background: var(--surface);
+}
+
+.input-elegant::placeholder {
+    color: #BDAEAF; /* Warm muted placeholder */
+    font-weight: 400;
+}
+
+/* ====================================================================
+   BUTTONS (MERAH MUDA TULISAN PUTIH ELEGAN)
+   ==================================================================== */
+.btn-primary-pink {
+    background: linear-gradient(135deg, var(--secondary), var(--primary)); /* Gradasi Merah Muda */
+    color: #FFFFFF !important; /* Tulisan Putih Bersih */
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 700; /* Dipertebal agar lebih tegas */
+    font-size: 0.875rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
+}
+
+.btn-primary-pink svg {
+    stroke-width: 2.5; /* Ikon di dalam tombol sedikit lebih tebal */
+}
+
+.btn-primary-pink:hover {
+    background: linear-gradient(135deg, #E11D48, #BE123C); /* Merah muda lebih gelap saat hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(225, 29, 72, 0.4);
+}
+
+.btn-primary-pink:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 8px rgba(225, 29, 72, 0.2);
+}
+
+/* Variasi tombol sekunder jika diperlukan (Outline Pink) */
+.btn-secondary-pink {
+    background: #FFF1F2;
+    color: var(--primary);
+    border: 1px solid var(--accent);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 700;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-secondary-pink:hover {
+    background: #FFE4E6;
+    border-color: var(--secondary);
+    color: #BE123C;
+}
+
+/* ====================================================================
+   SIDEBAR COMPONENT
+   ==================================================================== */
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    color: var(--text-gray);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border-radius: 0.75rem;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.sidebar-link:hover {
+    background: #FFF5F7; /* Sangat soft pink/white saat di-hover */
+    color: var(--primary);
+}
+
+.sidebar-link.active {
+    background: #FFF1F2; /* Rose 50 */
+    color: var(--primary);
+    box-shadow: inset 2px 0 0 0 var(--primary); /* Aksen elegan di kiri */
+}
+
+/* ====================================================================
+   TABLE DESIGN (Responsive & Clean SaaS Look)
+   ==================================================================== */
+.table-responsive-glass {
+    overflow-x: auto;
+    border-radius: 1rem;
+    border: 1px solid var(--border-color);
+    background: var(--surface);
+    box-shadow: 0 2px 12px -4px rgba(225, 29, 72, 0.02);
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-glass {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.table-glass th {
+    background: #FFF8F9; /* Header tabel bernuansa hangat */
+    color: var(--primary); /* Menggunakan pink pada header agar lebih hidup */
+    padding: 1rem 1.25rem;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table-glass td {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.875rem;
+    color: var(--text-dark);
+    transition: background 0.2s;
+}
+
+.table-glass tr:last-child td {
+    border-bottom: none;
+}
+
+.table-glass tbody tr:hover td {
+    background: #FFFBFC; /* Efek hover sangat halus menyatu dengan tema */
+}

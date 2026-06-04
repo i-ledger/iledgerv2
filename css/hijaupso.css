@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary: #ff4fa3;
+    --secondary: #ff6eb5;a
+    --accent: #ff8cc8;
+    --bg-light: #fce4ec;
+    --text-dark: #2a2a2a;
+    --text-gray: #444444;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    overflow-x: hidden;
+}
+
+/* Glassmorphism & Animations */
+.glass-card {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 1.25rem;
+    box-shadow: 0 8px 32px 0 rgba(255, 79, 163, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+    box-shadow: 0 12px 40px 0 rgba(255, 79, 163, 0.2);
+}
+
+.glass-panel {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(255, 79, 163, 0.1);
+}
+
+/* Gradients */
+.bg-pink-gradient {
+    background: linear-gradient(135deg, #ff4fa3, #ff85c2, #ffc1dd);
+}
+
+.text-pink-gradient {
+    background: linear-gradient(135deg, #ff4fa3, #ff6eb5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Inputs & Buttons */
+.input-elegant {
+    border: 2px solid #fce4ec;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+    background: rgba(255,255,255,0.9);
+}
+
+.input-elegant:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(255, 79, 163, 0.15);
+}
+
+.btn-primary-pink {
+    background: linear-gradient(135deg, #ff4fa3, #ff6eb5);
+    color: white;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary-pink:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 79, 163, 0.4);
+}
+
+/* Sidebar Links */
+.sidebar-link {
+    transition: all 0.3s ease;
+    border-radius: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-link:hover, .sidebar-link.active {
+    background: rgba(255, 79, 163, 0.1);
+    color: var(--primary);
+    box-shadow: inset 4px 0 0 var(--primary);
+    transform: translateX(5px);
+}
