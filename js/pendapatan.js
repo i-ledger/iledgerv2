@@ -9,6 +9,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const sidebarOverlay = document.getElementById('sidebarOverlay');
     const btnActionMenu = document.getElementById('btnActionMenu');
     const actionContainer = document.getElementById('actionContainer');
+    
+    // Elemen Tambahan untuk Perbaikan Listener
+    const filterBulan = document.getElementById('filterBulan');
+    const btnBatal = document.getElementById('btnBatal');
 
     if (btnHamburger && sidebar && sidebarOverlay) {
         btnHamburger.addEventListener('click', () => {
@@ -36,6 +40,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 actionContainer.classList.remove('flex');
             }
         });
+    }
+
+    // PERBAIKAN 1: Memasang event listener agar filter bulan langsung merespon saat diganti
+    if (filterBulan) {
+        filterBulan.addEventListener('change', renderData);
+    }
+
+    // PERBAIKAN 3: Memasang listener untuk menangani tombol batal secara dinamis
+    if (btnBatal) {
+        btnBatal.addEventListener('click', resetFormMode);
     }
 
     // Menggunakan proteksi & sync profile dari api.js milik lu
@@ -99,7 +113,7 @@ async function executeSubmit(payload) {
     
     try {
         // Swal loading di-handle manual karena api.js lu ga pake didOpen loading saat request biasa
-        Swal.fire({ title: 'Menyimpan data...', didOpen: () => Swal.showLoading() });
+        Swal.fire({ title: 'Menyimpan data...', didOpen: () => Swal.showLoading(), allowOutsideClick: false });
         
         await API.request(action, payload);
         
@@ -115,6 +129,16 @@ async function executeSubmit(payload) {
         loadData();
     } catch (error) {
         console.error("Gagal memproses transaksi:", error);
+        
+        // PERBAIKAN 2: Menutup loading jika API error dan menampilkan pemberitahuan kegagalan
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal Menyimpan!',
+            text: 'Terjadi kesalahan saat mengirim data ke spreadsheet.',
+            confirmButtonColor: '#ff4fa3',
+            customClass: { popup: 'rounded-3xl text-slate-900' }
+        });
+
         if (btn) {
             btn.disabled = false;
             btn.innerText = isEditMode ? "Update Pendapatan" : "Simpan Data Jurnal Pendapatan";
@@ -282,7 +306,6 @@ function editData(id) {
 
 // Eliminasi Data memanfaatkan fungsi genericDelete bawaan atau via API.request langsung
 async function deleteData(id) {
-    // Di sini kita pakai cara manual agar setelah dihapus otomatis mentrigger loadData() milik halaman ini
     const result = await Swal.fire({
         title: 'Apakah Anda yakin?',
         text: "Data transaksi pendapatan ini akan dihapus secara permanen dari spreadsheet.",
@@ -297,12 +320,24 @@ async function deleteData(id) {
 
     if (result.isConfirmed) {
         try {
+            // Menampilkan loading block saat proses delete berjalan
+            Swal.fire({ title: 'Menghapus data...', didOpen: () => Swal.showLoading(), allowOutsideClick: false });
+
             // Menembak action delete ke backend GAS lu
             await API.request('pendapatan/delete', { id: id });
             Swal.fire('Terhapus!', 'Data pendapatan berhasil dibersihkan.', 'success');
             loadData();
         } catch (error) {
             console.error("Gagal menghapus data:", error);
+            
+            // PERBAIKAN 2 (Tambahan): Menutup loading jika proses delete gagal
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal Menghapus!',
+                text: 'Terjadi kesalahan saat menghapus data dari spreadsheet.',
+                confirmButtonColor: '#ff4fa3',
+                customClass: { popup: 'rounded-3xl text-slate-900' }
+            });
         }
     }
 }
