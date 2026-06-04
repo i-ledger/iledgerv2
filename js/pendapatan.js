@@ -69,7 +69,7 @@
       // Error alert otomatis ditangani oleh interseptor di api.js
       if (btn) {
         btn.disabled = false;
-        btn.innerText = isEditMode ? "Update Pendapatan" : "Simpan Pendapatan";
+btn.innerText = "Simpan Data Jurnal Pendapatan";
       }
     }
   }
