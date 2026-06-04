@@ -41,7 +41,7 @@
         }
 
         .sidebar-link.active {
-            background-color: #EFF6FF; /* Biru muda transparan */
+            background-color: #EFF6FF; /* Biru muda solid */
             color: #1D4ED8; /* Biru tegas */
             font-weight: 700;
         }
@@ -65,12 +65,12 @@
     <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-white border-r border-slate-100 shadow-[4px_0_24px_rgba(0,0,0,0.02)] transform -translate-x-full lg:translate-x-0 lg:static lg:flex flex-col transition-transform duration-300 ease-in-out">
         
         <div class="h-20 flex items-center justify-center border-b border-slate-100">
-            <h2 class="text-2xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-sky-400">
+            <h2 class="text-2xl font-extrabold tracking-tight text-blue-600">
                 iledger
             </h2>
         </div>
 
-        <div class="px-6 py-8 border-b border-slate-100 flex flex-col items-center text-center bg-slate-50/50">
+        <div class="px-6 py-8 border-b border-slate-100 flex flex-col items-center text-center bg-slate-50">
             <div class="w-20 h-20 rounded-full bg-white border-4 border-white shadow-md flex items-center justify-center mb-4 overflow-hidden relative group cursor-pointer">
                 <svg class="w-10 h-10 text-slate-300 group-hover:text-blue-500 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
             </div>
@@ -101,7 +101,7 @@
 
     <main class="flex-1 flex flex-col min-w-0 bg-[#F8FAFC]">
         
-        <header class="h-20 bg-white/80 backdrop-blur-lg border-b border-slate-200 px-6 lg:px-10 flex justify-between items-center z-20 sticky top-0">
+        <header class="h-20 bg-white border-b border-slate-200 px-6 lg:px-10 flex justify-between items-center z-20 sticky top-0">
             
             <div class="flex items-center gap-4">
                 <button id="btnHamburger" class="lg:hidden p-2 -ml-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
@@ -173,7 +173,8 @@
                     </div>
                 </div>
                 
-                <div class="bg-gradient-to-br from-slate-900 to-blue-950 rounded-3xl p-6 shadow-md border border-slate-800 hover:shadow-lg transition-all duration-300 flex items-center justify-between group" data-aos="fade-up" data-aos-delay="300">
+                <!-- Card Utama: Warna Hitam Pekat Solid Pro -->
+                <div class="bg-slate-900 rounded-3xl p-6 shadow-md border border-slate-800 hover:shadow-lg transition-all duration-300 flex items-center justify-between group" data-aos="fade-up" data-aos-delay="300">
                     <div>
                         <p class="text-sm font-bold text-sky-300 mb-2 uppercase tracking-wider">Laba / Rugi Bersih</p>
                         <div class="flex items-baseline gap-1">
@@ -259,7 +260,8 @@
                             <input type="file" id="fileTransaksiInput" class="hidden" accept=".csv,.xlsx,.pdf">
                         </div>
 
-                        <button onclick="prosesUploadCepat()" class="w-full mt-4 bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-700 hover:to-sky-600 text-white font-bold py-2.5 rounded-xl text-xs shadow-sm transition-all transform active:scale-[0.98]">
+                        <!-- Button Solid Blue -->
+                        <button onclick="prosesUploadCepat()" class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-sm transition-all transform active:scale-[0.98]">
                             Mulai Parsing Data
                         </button>
                     </div>
@@ -333,7 +335,7 @@
                         {
                             label: 'Pendapatan',
                             data: [65000000, 78000000, 92000000, 81000000, 110000000, 145230000],
-                            borderColor: '#2563EB', /* Biru Utama */
+                            borderColor: '#2563EB',
                             backgroundColor: 'rgba(37, 99, 235, 0.05)',
                             tension: 0.4,
                             fill: true
@@ -341,7 +343,7 @@
                         {
                             label: 'Pengeluaran',
                             data: [40000000, 48000000, 52000000, 61000000, 70000000, 88450000],
-                            borderColor: '#0EA5E9', /* Biru Muda / Sky */
+                            borderColor: '#0EA5E9',
                             backgroundColor: 'rgba(14, 165, 233, 0.05)',
                             tension: 0.4,
                             fill: true
