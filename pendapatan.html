@@ -1,79 +1,351 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <base target="_top">
+<html lang="id">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="api.js"></script>
-  </head>
-  <body class="bg-gray-100 p-4 sm:p-6">
+    <title>Pendapatan - iledger Admin</title>
     
-    <div class="max-w-5xl mx-auto space-y-6">
-      <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-600" id="formContainer">
-        <h2 class="text-xl font-bold mb-4 text-gray-800 border-b pb-2" id="formTitle">Input Pendapatan Baru</h2>
-        
-        <form id="formPendapatan" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Nama</label>
-            <input type="text" id="nama" required class="mt-1 block w-full p-2 border border-gray-300 rounded shadow-sm focus:ring-blue-500 focus:border-blue-500">
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Nominal (Rp)</label>
-            <input type="number" id="nominal" required class="mt-1 block w-full p-2 border border-gray-300 rounded shadow-sm focus:ring-blue-500 focus:border-blue-500">
-          </div>
-          <div class="md:col-span-2">
-            <label class="block text-sm font-medium text-gray-700">Uraian / Keterangan</label>
-            <textarea id="uraian" required rows="2" class="mt-1 block w-full p-2 border border-gray-300 rounded shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
-          </div>
-          <div class="md:col-span-2">
-            <label class="block text-sm font-medium text-gray-700">Bukti Transfer (Gambar/PDF)</label>
-            <input type="file" id="buktiTransfer" accept="image/*,application/pdf" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-          </div>
-          <div class="md:col-span-2 flex justify-end gap-2">
-            <button type="button" id="btnBatal" onclick="resetFormMode()" class="hidden bg-gray-400 hover:bg-gray-500 text-white font-semibold py-2 px-4 rounded shadow">
-              Batal
-            </button>
-            <button type="submit" id="btnSubmit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded shadow">
-              Simpan Pendapatan
-            </button>
-          </div>
-        </form>
-      </div>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <link class="rounded-md" rel="icon" href="r22.png" type="image/png">
+    <link rel="manifest" href="manifest.json">
 
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-          <h2 class="text-xl font-bold text-gray-800">Riwayat Pendapatan</h2>
-          
-          <div class="w-full sm:w-64">
-            <input type="text" id="searchPendapatan" onkeyup="filterTable('searchPendapatan', 'tabelBody')" class="w-full p-1.5 text-sm border border-gray-300 rounded shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Cari di tabel riwayat...">
-          </div>
-        </div>
-        
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Uraian</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nominal</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Bukti</th>
-                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="tabelBody" class="bg-white divide-y divide-gray-200 text-sm">
-              <tr>
-                <td colspan="7" class="px-4 py-4 text-center text-gray-500">Memuat data riwayat...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background-color: #F8FAFC;
+        }
 
-    <?!= HtmlService.createHtmlOutputFromFile('pendapatan.js').getContent(); ?>
-  </body>
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+
+        .sidebar-link.active {
+            background-color: #EFF6FF;
+            color: #1D4ED8;
+            font-weight: 700;
+        }
+        .sidebar-link.active svg {
+            color: #1D4ED8;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-slate-800">
+    
+    <!-- Sidebar Overlay Mobile -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-30 hidden opacity-0 transition-opacity duration-300 lg:hidden"></div>
+
+    <!-- Sidebar (Sama dengan Admin) -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-white border-r border-slate-100 shadow-[4px_0_24px_rgba(0,0,0,0.02)] transform -translate-x-full lg:translate-x-0 lg:static lg:flex flex-col transition-transform duration-300 ease-in-out">
+        
+        <div class="h-20 flex items-center justify-center border-b border-slate-100">
+            <h2 class="text-2xl font-extrabold tracking-tight text-blue-600">iledger</h2>
+        </div>
+
+        <div class="px-6 py-6 border-b border-slate-100 flex flex-col items-center text-center bg-slate-50">
+            <div class="w-16 h-16 rounded-full bg-white border-4 border-white shadow-sm flex items-center justify-center mb-3 overflow-hidden relative group cursor-pointer">
+                <svg class="w-8 h-8 text-slate-300 group-hover:text-blue-500 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+            </div>
+            <h3 class="text-sm font-extrabold text-slate-800 leading-tight mb-0.5" id="userName">Admin Ledger</h3>
+            <p class="text-[10px] font-bold text-sky-600 uppercase tracking-widest mb-2 line-clamp-1" id="companyName">Memuat Entitas...</p>
+            <span class="text-[9px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full uppercase tracking-wider" id="userRole">Finance Admin</span>
+        </div>
+
+        <nav class="flex-1 px-4 py-4 space-y-1 overflow-y-auto no-scrollbar">
+            <a href="dashboard-admin.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:text-slate-800 hover:bg-slate-50 transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                <span class="font-semibold text-sm">Dashboard Overview</span>
+            </a>
+            
+            <a href="pendapatan.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-slate-50">
+                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <span class="font-semibold text-sm">Pendapatan</span>
+            </a>
+
+            <a href="pengeluaran.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:text-slate-800 hover:bg-slate-50 transition-all duration-200">
+                <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+                <span class="font-semibold text-sm">Pengeluaran</span>
+            </a>
+
+            <a href="kelola-pos-pengeluaran.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:text-slate-800 hover:bg-slate-50 transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                <span class="font-semibold text-sm">Kelola Pos Pengeluaran</span>
+            </a>
+
+            <div>
+                <button onclick="toggleDropdown('armadaDropdown', 'armadaArrow')" class="w-full flex items-center justify-between px-4 py-3 rounded-xl text-slate-600 hover:text-slate-800 hover:bg-slate-50 transition-all duration-200 focus:outline-none">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10M13 16h6l3-3V9a1 1 0 00-1-1h-8m0 8v-4"/></svg>
+                        <span class="font-semibold text-sm">Data Armada</span>
+                    </div>
+                    <svg id="armadaArrow" class="w-4 h-4 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="armadaDropdown" class="hidden pl-9 pr-2 py-1 space-y-1 bg-slate-50 rounded-xl mt-1 transition-all duration-300">
+                    <a href="armada-perusahaan.html" class="block py-2 px-3 text-xs font-semibold text-slate-500 hover:text-blue-600 rounded-lg transition-colors">Armada Perusahaan</a>
+                    <a href="pajak-kendaraan.html" class="block py-2 px-3 text-xs font-semibold text-slate-500 hover:text-blue-600 rounded-lg transition-colors">Pajak Kendaraan</a>
+                    <a href="perawatan-armada.html" class="block py-2 px-3 text-xs font-semibold text-slate-500 hover:text-blue-600 rounded-lg transition-colors">Perawatan Armada</a>
+                    <a href="bbm.html" class="block py-2 px-3 text-xs font-semibold text-slate-500 hover:text-blue-600 rounded-lg transition-colors">Data Bahan Bakar Minyak (BBM)</a>
+                </div>
+            </div>
+
+            <a href="data-karyawan.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:text-slate-800 hover:bg-slate-50 transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <span class="font-semibold text-sm">Data Karyawan</span>
+            </a>
+
+            <a href="laba-rugi.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:text-slate-800 hover:bg-slate-50 transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span class="font-semibold text-sm">Laporan Laba Rugi</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col min-w-0 bg-[#F8FAFC]">
+        
+        <!-- Header (Sama dengan Admin) -->
+        <header class="h-20 bg-white border-b border-slate-200 px-6 lg:px-10 flex justify-between items-center z-20 sticky top-0">
+            <div class="flex items-center gap-4">
+                <button id="btnHamburger" class="lg:hidden p-2 -ml-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <div>
+                    <h1 class="font-extrabold text-xl lg:text-2xl text-slate-800 tracking-tight" data-aos="fade-right">Catatan Pendapatan</h1>
+                </div>
+            </div>
+            
+            <div class="relative flex items-center">
+                <button id="btnActionMenu" class="lg:hidden p-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+                </button>
+
+                <div id="actionContainer" class="hidden absolute right-0 top-14 w-56 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-slate-100 rounded-2xl p-2 flex-col gap-1 z-50 lg:static lg:flex lg:flex-row lg:bg-transparent lg:shadow-none lg:border-none lg:p-0 lg:w-auto lg:items-center lg:gap-2">
+                    <a href="users.html" class="flex items-center gap-3 px-4 py-2.5 lg:p-2.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all" title="Data Pengguna">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        <span class="lg:hidden text-sm font-semibold">Data Pengguna</span>
+                    </a>
+                    <a href="approval.html" class="flex items-center gap-3 px-4 py-2.5 lg:p-2.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all" title="Approval Akun">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        <span class="lg:hidden text-sm font-semibold">Approval Akun</span>
+                    </a>
+                    <a href="setting.html" class="flex items-center gap-3 px-4 py-2.5 lg:p-2.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all" title="Pengaturan">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+                        <span class="lg:hidden text-sm font-semibold">Pengaturan</span>
+                    </a>
+                    <div class="hidden lg:block h-8 w-px bg-slate-200 mx-2"></div>
+                    <button onclick="API.logout()" class="w-full lg:w-auto flex items-center gap-3 px-4 py-2.5 lg:p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                        <span class="lg:hidden text-sm font-semibold text-red-500">Keluar Sistem</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Konten Halaman Pendapatan -->
+        <div class="flex-1 overflow-y-auto p-6 lg:p-10 scroll-smooth">
+            
+            <!-- Cards Ringkasan Pendapatan -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100 flex items-center justify-between" data-aos="fade-up">
+                    <div>
+                        <p class="text-sm font-semibold text-slate-500 mb-1">Pendapatan Bulan Ini</p>
+                        <h2 class="text-2xl font-extrabold text-slate-800" id="incomeMonth">Rp 145.230.000</h2>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                </div>
+                <div class="bg-white rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100 flex items-center justify-between" data-aos="fade-up" data-aos-delay="100">
+                    <div>
+                        <p class="text-sm font-semibold text-slate-500 mb-1">Total Transaksi</p>
+                        <h2 class="text-2xl font-extrabold text-slate-800">48 Entri</h2>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                    </div>
+                </div>
+                <div class="bg-white rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100 flex items-center justify-between" data-aos="fade-up" data-aos-delay="200">
+                    <div>
+                        <p class="text-sm font-semibold text-slate-500 mb-1">Piutang Berjalan</p>
+                        <h2 class="text-2xl font-extrabold text-slate-800">Rp 12.500.000</h2>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabel & Input Form Data Pendapatan -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-white rounded-3xl p-6 lg:p-8 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100">
+                    <div class="flex justify-between items-center mb-6 border-b border-slate-50 pb-4">
+                        <div>
+                            <h3 class="text-lg font-extrabold text-slate-800">Riwayat Mutasi Pendapatan</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">Daftar penerimaan kas dan invoice klaim</p>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead>
+                                <tr class="text-xs font-bold uppercase text-slate-400 border-b border-slate-100">
+                                    <th class="py-3 px-3">Tanggal</th>
+                                    <th class="py-3 px-3">Keterangan</th>
+                                    <th class="py-3 px-3">Pos Akun</th>
+                                    <th class="py-3 px-3 text-right">Jumlah</th>
+                                    <th class="py-3 px-3 text-center">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-50 text-slate-600 font-medium">
+                                <tr>
+                                    <td class="py-4 px-3 text-xs text-slate-400">02 Juni 2026</td>
+                                    <td class="py-4 px-3 text-slate-900 font-bold">Pembayaran Invoice #INV-2026-001</td>
+                                    <td class="py-4 px-3"><span class="text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md text-xs">4-1000 Operasional</span></td>
+                                    <td class="py-4 px-3 text-right text-emerald-600 font-bold">Rp 45.000.000</td>
+                                    <td class="py-4 px-3 text-center"><span class="bg-emerald-50 text-emerald-600 px-2.5 py-0.5 rounded-full text-[10px] font-bold">LUNAS</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-4 px-3 text-xs text-slate-400">01 Juni 2026</td>
+                                    <td class="py-4 px-3 text-slate-900 font-bold">Klaim Muatan Logistik Armada Euro</td>
+                                    <td class="py-4 px-3"><span class="text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md text-xs">4-1000 Operasional</span></td>
+                                    <td class="py-4 px-3 text-right text-emerald-600 font-bold">Rp 12.500.000</td>
+                                    <td class="py-4 px-3 text-center"><span class="bg-amber-50 text-amber-600 px-2.5 py-0.5 rounded-full text-[10px] font-bold">PENDING</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Input Form Samping -->
+                <div class="bg-white rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100">
+                    <h3 class="text-base font-extrabold text-slate-800 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Catat Pendapatan Baru
+                    </h3>
+                    <form class="space-y-4" onsubmit="simpanPendapatan(event)">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Tanggal Transaksi</label>
+                            <input type="date" required class="w-full bg-slate-50 border border-slate-200 py-2.5 px-3 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Pos Akun Penerimaan</label>
+                            <select class="w-full bg-slate-50 border border-slate-200 py-2.5 px-3 rounded-xl text-xs font-semibold focus:outline-none">
+                                <option value="4-1000">4-1000 - Pendapatan Operasional</option>
+                                <option value="4-2000">4-2000 - Pendapatan Non-Operasional</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Nominal (Rp)</label>
+                            <input type="number" placeholder="Contoh: 5000000" required class="w-full bg-slate-50 border border-slate-200 py-2.5 px-3 rounded-xl text-xs font-semibold focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Keterangan / Memo</label>
+                            <textarea placeholder="Tulis detail sumber pendapatan di sini..." rows="3" class="w-full bg-slate-50 border border-slate-200 py-2.5 px-3 rounded-xl text-xs font-semibold focus:outline-none"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-xs shadow-sm transition-all transform active:scale-[0.98]">
+                            Simpan Data Jurnal Pendapatan
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>AOS.init({ once: true });</script>
+    
+    <script>
+        function toggleDropdown(dropdownId, arrowId) {
+            const dropdown = document.getElementById(dropdownId);
+            const arrow = document.getElementById(arrowId);
+            dropdown.classList.toggle('hidden');
+            arrow.classList.toggle('rotate-180');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Logika Mobile Menu & Overlay
+            const btnHamburger = document.getElementById('btnHamburger');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const btnActionMenu = document.getElementById('btnActionMenu');
+            const actionContainer = document.getElementById('actionContainer');
+
+            if (btnHamburger && sidebar && sidebarOverlay) {
+                btnHamburger.addEventListener('click', () => {
+                    sidebarOverlay.classList.remove('hidden');
+                    setTimeout(() => sidebarOverlay.classList.remove('opacity-0'), 10);
+                    sidebar.classList.remove('-translate-x-full');
+                });
+
+                sidebarOverlay.addEventListener('click', () => {
+                    sidebarOverlay.classList.add('opacity-0');
+                    sidebar.classList.add('-translate-x-full');
+                    setTimeout(() => sidebarOverlay.classList.add('hidden'), 300);
+                });
+            }
+
+            if (btnActionMenu && actionContainer) {
+                btnActionMenu.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    actionContainer.classList.toggle('hidden');
+                    actionContainer.classList.toggle('flex');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!actionContainer.contains(e.target) && e.target !== btnActionMenu) {
+                        actionContainer.classList.add('hidden');
+                        actionContainer.classList.remove('flex');
+                    }
+                });
+            }
+
+            // Load Data Profil Pengguna dari LocalStorage
+            const user = JSON.parse(localStorage.getItem('r22_user'));
+            if(user){
+                document.getElementById('userName').textContent = user.nama;
+                document.getElementById('userRole').textContent = user.role || "Finance Admin";
+                if(document.getElementById('companyName')) {
+                    document.getElementById('companyName').textContent = user.perusahaan || "PT. INDO LEDGER TEKNOLOGI";
+                }
+            }
+        });
+
+        function simpanPendapatan(e) {
+            e.preventDefault();
+            Swal.fire({
+                icon: 'success',
+                title: 'Pendapatan Berhasil Dicatat',
+                text: 'Data mutasi jurnal kas masuk telah diperbarui.',
+                confirmButtonColor: '#2563EB'
+            });
+        }
+    </script>
+</body>
 </html>
