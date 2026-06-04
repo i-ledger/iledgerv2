@@ -166,10 +166,10 @@
 
         <div class="flex-1 overflow-y-auto p-6 lg:p-10 scroll-smooth">
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-white rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100 flex items-center justify-between" data-aos="fade-up">
                     <div>
-                        <p class="text-sm font-semibold text-slate-500 mb-1">Pendapatan Bulan Ini</p>
+                        <p class="text-sm font-semibold text-slate-500 mb-1" id="incomeLabel">Total Pendapatan</p>
                         <h2 class="text-2xl font-extrabold text-slate-800" id="incomeMonth">Rp 0</h2>
                     </div>
                     <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
@@ -185,24 +185,21 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                     </div>
                 </div>
-                <div class="bg-white rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100 flex items-center justify-between" data-aos="fade-up" data-aos-delay="200">
-                    <div>
-                        <p class="text-sm font-semibold text-slate-500 mb-1">Piutang Berjalan</p>
-                        <h2 class="text-2xl font-extrabold text-slate-800">Rp 0</h2>
-                    </div>
-                    <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </div>
-                </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
                 <div class="lg:col-span-2 bg-white rounded-3xl p-6 lg:p-8 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100">
-                    <div class="flex justify-between items-center mb-6 border-b border-slate-50 pb-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b border-slate-50 pb-4 gap-4">
                         <div>
                             <h3 class="text-lg font-extrabold text-slate-800">Riwayat Mutasi Pendapatan</h3>
                             <p class="text-xs text-slate-400 mt-0.5">Daftar kas masuk berdasarkan log aktivitas pelapor</p>
+                        </div>
+                        <div class="flex items-center gap-2 self-end sm:self-auto">
+                            <label for="filterBulan" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider whitespace-nowrap">Bulan:</label>
+                            <select id="filterBulan" onchange="renderData()" class="bg-slate-50 border border-slate-200 py-1.5 px-3 rounded-xl text-xs font-bold text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer">
+                                <option value="all">Semua Periode</option>
+                            </select>
                         </div>
                     </div>
                     
@@ -385,6 +382,7 @@
             }
         }
 
+        // Ambil data mentah dari server dan bangun opsi filternya
         async function loadData() {
             const tbody = document.getElementById('tabelBody');
             if (!tbody) return;
@@ -393,59 +391,130 @@
             
             try {
                 const data = await API.request('pendapatan/get');
-                tbody.innerHTML = "";
-                globalDataCache = data;
+                globalDataCache = data || [];
                 
-                if (!data || data.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-center text-xs font-semibold text-slate-400">Belum ada data riwayat pendapatan.</td></tr>`;
-                    document.getElementById('incomeMonth').textContent = "Rp 0";
-                    document.getElementById('totalEntries').textContent = "0 Entri";
-                    return;
-                }
+                // Sinkronisasi opsi filter bulan berdasarkan ketersediaan data secara dinamis
+                buildMonthFilterOptions();
                 
-                let totalNominalBulanIni = 0;
-                document.getElementById('totalEntries').textContent = `${data.length} Entri`;
-
-                data.forEach(function(item) {
-                    totalNominalBulanIni += parseFloat(item.nominal || 0);
-
-                    const tr = document.createElement('tr');
-                    tr.className = "hover:bg-slate-50/80 transition-colors border-b border-slate-50 text-slate-600 font-medium";
-                    
-                    const formattedNominal = new Intl.NumberFormat('id-ID', { 
-                        style: 'currency', 
-                        currency: 'IDR', 
-                        minimumFractionDigits: 0 
-                    }).format(item.nominal);
-                    
-                    let linkBukti = `<span class="text-xs text-slate-400 font-normal">-</span>`;
-                    if (item.buktiTransfer && item.buktiTransfer !== "-") {
-                        linkBukti = `<a href="${item.buktiTransfer}" target="_blank" class="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 hover:underline font-bold">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
-                            Lihat File
-                        </a>`;
-                    }
-
-                    tr.innerHTML = `
-                        <td class="py-4 px-4 font-mono text-[11px] text-slate-400 font-bold">#${item.idPembelian}</td>
-                        <td class="py-4 px-4 text-xs text-slate-400 font-normal">${item.timestamp}</td>
-                        <td class="py-4 px-4 text-slate-800 font-extrabold text-xs max-w-[140px] truncate">${item.nama}</td>
-                        <td class="py-4 px-4 text-xs text-slate-500 max-w-[180px] truncate">${item.uraian}</td>
-                        <td class="py-4 px-4 text-right text-emerald-600 font-extrabold">${formattedNominal}</td>
-                        <td class="py-4 px-4 text-center">${linkBukti}</td>
-                        <td class="py-4 px-4 text-center space-x-1.5 whitespace-nowrap">
-                            <button onclick="triggerEdit('${item.idPembelian}')" class="bg-amber-50 hover:bg-amber-100 text-amber-700 text-[11px] py-1.5 px-3 rounded-xl font-bold transition-colors">Edit</button>
-                            <button onclick="triggerDelete('${item.idPembelian}')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 text-[11px] py-1.5 px-3 rounded-xl font-bold transition-colors">Hapus</button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-
-                document.getElementById('incomeMonth').textContent = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(totalNominalBulanIni);
-
+                // Render data ke tabel
+                renderData();
             } catch (error) {
                 tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-6 text-center text-xs font-bold text-rose-500">Gagal memuat data riwayat dari server.</td></tr>`;
             }
+        }
+
+        // Generate opsi dropdown filter bulan secara otomatis dari timestamp data
+        function buildMonthFilterOptions() {
+            const filterSelect = document.getElementById('filterBulan');
+            if (!filterSelect) return;
+
+            const selectedValue = filterSelect.value; // Amankan value terpilih sebelumnya jika ada
+            filterSelect.innerHTML = '<option value="all">Semua Periode</option>';
+
+            const uniqueMonths = [];
+            const namaBulanIndo = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+            globalDataCache.forEach(item => {
+                if (item.timestamp && item.timestamp.length >= 7) {
+                    const yyyyMM = item.timestamp.substring(0, 7); // Hasil ekstradisi format "YYYY-MM"
+                    if (!uniqueMonths.includes(yyyyMM)) {
+                        uniqueMonths.push(yyyyMM);
+                    }
+                }
+            });
+
+            // Urutkan bulan dari yang terbaru (Descending)
+            uniqueMonths.sort().reverse();
+
+            uniqueMonths.forEach(ym => {
+                const [year, month] = ym.split('-');
+                const labelBulan = `${namaBulanIndo[parseInt(month) - 1]} ${year}`;
+                const option = document.createElement('option');
+                option.value = ym;
+                option.textContent = labelBulan;
+                filterSelect.appendChild(option);
+            });
+
+            // Kembalikan seleksi user semula jika opsinya masih ada
+            if ([...filterSelect.options].some(opt => opt.value === selectedValue)) {
+                filterSelect.value = selectedValue;
+            }
+        }
+
+        // Fungsi pemrosesan render data lokal terfilter ke dalam interface
+        function renderData() {
+            const tbody = document.getElementById('tabelBody');
+            const filterValue = document.getElementById('filterBulan').value;
+            const labelCard = document.getElementById('incomeLabel');
+            
+            if (!tbody) return;
+            tbody.innerHTML = "";
+
+            // Filter data berdasarkan target pilihan bulan
+            const filteredData = globalDataCache.filter(item => {
+                if (filterValue === "all") return true;
+                return item.timestamp && item.timestamp.startsWith(filterValue);
+            });
+
+            // Ubah label kartu nominal dinamis biar informatif
+            if (filterValue === "all") {
+                labelCard.textContent = "Total Pendapatan (Semua)";
+            } else {
+                const filterSelect = document.getElementById('filterBulan');
+                labelCard.textContent = `Pendapatan ${filterSelect.options[filterSelect.selectedIndex].text}`;
+            }
+
+            document.getElementById('totalEntries').textContent = `${filteredData.length} Entri`;
+
+            if (filteredData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-center text-xs font-semibold text-slate-400">Tidak ada data pendapatan di periode ini.</td></tr>`;
+                document.getElementById('incomeMonth').textContent = "Rp 0";
+                return;
+            }
+
+            let totalNominalTerfilter = 0;
+
+            filteredData.forEach(function(item) {
+                totalNominalTerfilter += parseFloat(item.nominal || 0);
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50/80 transition-colors border-b border-slate-50 text-slate-600 font-medium";
+                
+                const formattedNominal = new Intl.NumberFormat('id-ID', { 
+                    style: 'currency', 
+                    currency: 'IDR', 
+                    minimumFractionDigits: 0 
+                }).format(item.nominal);
+                
+                let linkBukti = `<span class="text-xs text-slate-400 font-normal">-</span>`;
+                if (item.buktiTransfer && item.buktiTransfer !== "-") {
+                    linkBukti = `<a href="${item.buktiTransfer}" target="_blank" class="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 hover:underline font-bold">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                        Lihat File
+                    </a>`;
+                }
+
+                tr.innerHTML = `
+                    <td class="py-4 px-4 font-mono text-[11px] text-slate-400 font-bold">#${item.idPembelian}</td>
+                    <td class="py-4 px-4 text-xs text-slate-400 font-normal">${item.timestamp}</td>
+                    <td class="py-4 px-4 text-slate-800 font-extrabold text-xs max-w-[140px] truncate">${item.nama}</td>
+                    <td class="py-4 px-4 text-xs text-slate-500 max-w-[180px] truncate">${item.uraian}</td>
+                    <td class="py-4 px-4 text-right text-emerald-600 font-extrabold">${formattedNominal}</td>
+                    <td class="py-4 px-4 text-center">${linkBukti}</td>
+                    <td class="py-4 px-4 text-center space-x-1.5 whitespace-nowrap">
+                        <button onclick="triggerEdit('${item.idPembelian}')" class="bg-amber-50 hover:bg-amber-100 text-amber-700 text-[11px] py-1.5 px-3 rounded-xl font-bold transition-colors">Edit</button>
+                        <button onclick="triggerDelete('${item.idPembelian}')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 text-[11px] py-1.5 px-3 rounded-xl font-bold transition-colors">Hapus</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Set hasil sum nominal terfilter ke kartu
+            document.getElementById('incomeMonth').textContent = new Intl.NumberFormat('id-ID', { 
+                style: 'currency', 
+                currency: 'IDR', 
+                minimumFractionDigits: 0 
+            }).format(totalNominalTerfilter);
         }
 
         function triggerEdit(idPembelian) {
@@ -473,8 +542,8 @@
             if (btnBatal) btnBatal.classList.remove('hidden');
 
             document.getElementById('nama').value = item.nama;
-            document.getElementById('uraian').value = item.uraian;
             document.getElementById('nominal').value = item.nominal;
+            document.getElementById('uraian').value = item.uraian;
             
             if (formContainer) formContainer.scrollIntoView({ behavior: 'smooth' });
         }
