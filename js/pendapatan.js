@@ -1,5 +1,4 @@
-
-  let isEditMode = false;
+let isEditMode = false;
   let currentEditId = null;
   let globalDataCache = []; 
 
@@ -69,7 +68,8 @@
       // Error alert otomatis ditangani oleh interseptor di api.js
       if (btn) {
         btn.disabled = false;
-btn.innerText = "Simpan Data Jurnal Pendapatan";
+        // Teks dikembalikan sesuai kondisi mode form agar tetap konsisten
+        btn.innerText = isEditMode ? "Update Pendapatan" : "Simpan Data Jurnal Pendapatan";
       }
     }
   }
@@ -197,4 +197,3 @@ btn.innerText = "Simpan Data Jurnal Pendapatan";
       });
     }
   }
-</script>
