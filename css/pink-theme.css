@@ -1,15 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
-    /* Premium SaaS Color Palette (Elegant White & Rose/Pink) */
-    --primary: #E11D48;      /* Rose 600 - Profesional Pink */
-    --secondary: #F43F5E;    /* Rose 500 */
-    --accent: #FDA4AF;       /* Rose 300 */
-    --bg-light: #FFFBFC;     /* Blush White - Latar belakang putih dengan rona pink sangat halus */
-    --surface: #FFFFFF;      /* Pure White - Putih bersih elegan untuk elemen utama */
-    --text-dark: #2A1F22;    /* Warm Dark - Teks kontras tinggi dengan sentuhan hangat */
-    --text-gray: #887A7D;    /* Warm Gray - Teks sekunder yang lebih lembut */
-    --border-color: #FBEAEC; /* Soft Blush Border - Border halus bernuansa pink */
+    /* Premium SaaS Color Palette (Modern Tech Blue & Slate) */
+    --primary: #0052FF;      /* Digital Blue - Warna utama yang solid & profesional */
+    --secondary: #00A3FF;    /* Light Blue / Sky Blue - Untuk gradasi & highlight */
+    --accent: #A3D9FF;       /* Soft Blue Accent - Aksen biru muda transparan */
+    --bg-light: #F8FAFC;     /* Slate Light White - Latar belakang putih dengan rona cool-gray/blue sangat halus */
+    --surface: #FFFFFF;      /* Pure White - Putih bersih untuk card & panel */
+    --text-dark: #0F172A;    /* Slate Dark / Hitam Elegan - Kontras tinggi, modern, tidak kaku */
+    --text-gray: #64748B;    /* Cool Gray - Teks sekunder yang clean */
+    --border-color: #E2E8F0; /* Soft Slate Border - Garis batas halus yang menyatu */
     
     /* Status Colors */
     --success: #10B981;
@@ -38,11 +38,11 @@ body {
     background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-    background: #E8D5D8; /* Warm pinkish gray */
+    background: #CBD5E1; /* Soft cool gray-blue */
     border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #D1B8BC;
+    background: #94A3B8;
 }
 
 /* ====================================================================
@@ -52,13 +52,13 @@ body {
     background: var(--surface);
     border: 1px solid var(--border-color);
     border-radius: 1.25rem; /* 20px */
-    /* Menambahkan sedikit rona pink pada bayangan agar lebih elegan */
-    box-shadow: 0 4px 24px -4px rgba(225, 29, 72, 0.03), 0 2px 8px -2px rgba(225, 29, 72, 0.02);
+    /* Menggunakan bayangan biru tipis (soft blue glow) agar terlihat clean */
+    box-shadow: 0 4px 24px -4px rgba(0, 82, 255, 0.03), 0 2px 8px -2px rgba(0, 82, 255, 0.02);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .glass-card:hover {
-    box-shadow: 0 12px 32px -8px rgba(225, 29, 72, 0.08), 0 4px 12px -4px rgba(225, 29, 72, 0.04);
+    box-shadow: 0 12px 32px -8px rgba(0, 82, 255, 0.08), 0 4px 12px -4px rgba(0, 82, 255, 0.04);
     transform: translateY(-2px);
 }
 
@@ -72,11 +72,11 @@ body {
 /* ====================================================================
    GRADIENTS UTILITY
    ==================================================================== */
-.bg-pink-gradient {
+.bg-blue-gradient {
     background: linear-gradient(135deg, var(--secondary), var(--primary));
 }
 
-.text-pink-gradient {
+.text-blue-gradient {
     background: linear-gradient(135deg, var(--secondary), var(--primary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -102,24 +102,24 @@ body {
 .input-elegant:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.1);
+    box-shadow: 0 0 0 4px rgba(0, 82, 255, 0.1);
     background: var(--surface);
 }
 
 .input-elegant::placeholder {
-    color: #BDAEAF; /* Warm muted placeholder */
+    color: #94A3B8; /* Cool muted placeholder */
     font-weight: 400;
 }
 
 /* ====================================================================
-   BUTTONS (MERAH MUDA TULISAN PUTIH ELEGAN)
+   BUTTONS (BIRU GRADASI TULISAN PUTIH ELEGAN)
    ==================================================================== */
-.btn-primary-pink {
-    background: linear-gradient(135deg, var(--secondary), var(--primary)); /* Gradasi Merah Muda */
-    color: #FFFFFF !important; /* Tulisan Putih Bersih */
+.btn-primary-blue {
+    background: linear-gradient(135deg, var(--secondary), var(--primary)); /* Gradasi Biru Muda ke Biru Tua */
+    color: #FFFFFF !important;
     border-radius: 0.75rem;
     padding: 0.75rem 1.5rem;
-    font-weight: 700; /* Dipertebal agar lebih tegas */
+    font-weight: 700;
     font-size: 0.875rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: none;
@@ -128,27 +128,27 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 82, 255, 0.2);
 }
 
-.btn-primary-pink svg {
-    stroke-width: 2.5; /* Ikon di dalam tombol sedikit lebih tebal */
+.btn-primary-blue svg {
+    stroke-width: 2.5;
 }
 
-.btn-primary-pink:hover {
-    background: linear-gradient(135deg, #E11D48, #BE123C); /* Merah muda lebih gelap saat hover */
+.btn-primary-blue:hover {
+    background: linear-gradient(135deg, #0094e8, #0047DD); /* Biru sedikit lebih deep saat di-hover */
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(225, 29, 72, 0.4);
+    box-shadow: 0 6px 16px rgba(0, 82, 255, 0.35);
 }
 
-.btn-primary-pink:active {
+.btn-primary-blue:active {
     transform: translateY(1px);
-    box-shadow: 0 2px 8px rgba(225, 29, 72, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 82, 255, 0.15);
 }
 
-/* Variasi tombol sekunder jika diperlukan (Outline Pink) */
-.btn-secondary-pink {
-    background: #FFF1F2;
+/* Tombol sekunder (Outline/Light Blue Variant) */
+.btn-secondary-blue {
+    background: #EFF6FF; /* Blue 50 */
     color: var(--primary);
     border: 1px solid var(--accent);
     border-radius: 0.75rem;
@@ -163,10 +163,10 @@ body {
     gap: 0.5rem;
 }
 
-.btn-secondary-pink:hover {
-    background: #FFE4E6;
+.btn-secondary-blue:hover {
+    background: #DBEAFE; /* Blue 100 */
     border-color: var(--secondary);
-    color: #BE123C;
+    color: #0047DD;
 }
 
 /* ====================================================================
@@ -187,14 +187,14 @@ body {
 }
 
 .sidebar-link:hover {
-    background: #FFF5F7; /* Sangat soft pink/white saat di-hover */
+    background: #F0F6FF; /* Soft blueish white */
     color: var(--primary);
 }
 
 .sidebar-link.active {
-    background: #FFF1F2; /* Rose 50 */
+    background: #EFF6FF; /* Blue 50 */
     color: var(--primary);
-    box-shadow: inset 2px 0 0 0 var(--primary); /* Aksen elegan di kiri */
+    box-shadow: inset 2px 0 0 0 var(--primary); /* Aksen garis biru tegas di bagian kiri */
 }
 
 /* ====================================================================
@@ -205,7 +205,7 @@ body {
     border-radius: 1rem;
     border: 1px solid var(--border-color);
     background: var(--surface);
-    box-shadow: 0 2px 12px -4px rgba(225, 29, 72, 0.02);
+    box-shadow: 0 2px 12px -4px rgba(0, 82, 255, 0.02);
     -webkit-overflow-scrolling: touch;
 }
 
@@ -218,8 +218,8 @@ body {
 }
 
 .table-glass th {
-    background: #FFF8F9; /* Header tabel bernuansa hangat */
-    color: var(--primary); /* Menggunakan pink pada header agar lebih hidup */
+    background: #F8FAFC; /* Header tabel netral & bersih */
+    color: var(--primary); /* Teks header warna biru agar lebih stand out */
     padding: 1rem 1.25rem;
     font-weight: 700;
     font-size: 0.75rem;
@@ -241,5 +241,5 @@ body {
 }
 
 .table-glass tbody tr:hover td {
-    background: #FFFBFC; /* Efek hover sangat halus menyatu dengan tema */
+    background: #F1F5F9; /* Efek hover baris tabel yang soft */
 }
