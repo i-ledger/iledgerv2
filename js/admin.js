@@ -1,45 +1,47 @@
 // ==========================================
-// GLOBAL VARIABLE UNTUK FILTER
+// GLOBAL STATE & VARIABLE UNTUK FILTER
 // ==========================================
 let globalSalesData = []; 
-let globalPembelianData = []; // Menampung data historis dari sheet PEMBELIAN
+let globalPembelianData = []; // Menampung data historis dari sheet PEMBELIAN ter-optimasi
 let salesChartObj = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
     const user = API.checkAuth();
     if (user.role !== 'ADMIN' && user.role !== 'SUPER_ADMIN') return API.logout();
     
-    document.getElementById('userName').textContent = user.nama;
-    document.getElementById('userRole').textContent = user.role;
-    if(document.getElementById('companyName')) {
-        document.getElementById('companyName').textContent = user.perusahaan || "PT. SINARAPI JATAYU PERMAI";
-    }
+    // Set Informasi Profil & Perusahaan
+    setElementText('userName', user.nama);
+    setElementText('userRole', user.role);
+    setElementText('companyName', user.perusahaan || "PT. SINARAPI JATAYU PERMAI");
 
     try {
-        // Tembak API Stats Utama
+        // 1. Tembak API Stats Utama & Tampilkan Stok
         const stats = await API.request('dashboard/stats');
-        
-        // Tampilkan Stok Per Tabung
-        document.getElementById('stok50').textContent = stats.stok50 || 0;
-        document.getElementById('stok12').textContent = stats.stok12 || 0;
-        document.getElementById('stok5').textContent = stats.stok5 || 0;
-        
-        // Tampilkan Pengiriman Pending
-        document.getElementById('statDeliv').textContent = stats.pendingDeliveries || 0;
+        if (stats) {
+            setElementText('stok50', stats.stok50 || 0);
+            setElementText('stok12', stats.stok12 || 0);
+            setElementText('stok5', stats.stok5 || 0);
+            setElementText('statDeliv', stats.pendingDeliveries || 0);
+        }
 
-        // Tarik Data Pembelian Pertama Kali (Untuk Sinkronisasi Modal/Laba)
+        // 2. Tarik Data Pembelian Pertama Kali (Pre-processed untuk Efisiensi Pencarian)
         try {
             const pembelianData = await API.request('pembelian/get');
-            if (pembelianData) {
-                globalPembelianData = pembelianData;
+            if (pembelianData && Array.isArray(pembelianData)) {
+                // Optimasi: Mapping & urutkan descending berdasarkan tanggal dari awal
+                globalPembelianData = pembelianData.map(p => ({
+                    barangNormal: bersihkanNamaBarang(p.Barang),
+                    waktuBeli: p.Tanggal ? new Date(p.Tanggal).getTime() : 0,
+                    hargaBeli: parseFloat(p.HargaBeli || 0)
+                })).sort((a, b) => b.waktuBeli - a.waktuBeli);
             }
         } catch (errPembelian) {
             console.error("Gagal menarik statistik dari sheet pembelian:", errPembelian);
         }
 
-        // Tarik Data Transaksi untuk Grafik & Kalkulasi Dinamis
+        // 3. Tarik Data Transaksi untuk Grafik & Kalkulasi Dinamis
         const salesData = await API.request('penjualan/get');
-        if(salesData) {
+        if (salesData) {
             globalSalesData = salesData;
             
             // Inisialisasi Setting Tahun Otomatis
@@ -47,9 +49,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             // Set Default Filter (Semua Bulan, Tahun Saat Ini)
             const currentYear = new Date().getFullYear().toString();
-            
-            if(document.getElementById('filterTahun')) document.getElementById('filterTahun').value = currentYear;
-            if(document.getElementById('filterBulan')) document.getElementById('filterBulan').value = "ALL";
+            setElementValue('filterTahun', currentYear);
+            setElementValue('filterBulan', "ALL");
             
             // Render Grafik & Angka Keuangan Pertama Kali
             applyChartFilter(); 
@@ -61,8 +62,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // ==========================================
-// HELPER: PARSING TANGGAL ANTI-GAGAL
+// UTILITIES / HELPER FUNCTIONS
 // ==========================================
+function setElementText(id, text) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+}
+
+function setElementValue(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.value = val;
+}
+
+function bersihkanNamaBarang(str) {
+    return str ? str.toLowerCase().replace(/[\s,.]/g, '') : '';
+}
+
 function parseDateToYMD(rawDateStr) {
     if (!rawDateStr || rawDateStr === "-") return { y: "1970", m: "01", d: "01" };
     
@@ -84,6 +99,53 @@ function parseDateToYMD(rawDateStr) {
         }
     }
     return { y: "1970", m: "01", d: "01" };
+}
+
+// Helper Ekstraksi Item Transaksi (DRY Principle)
+function ekstrakItemsDariTransaksi(item) {
+    let items = [];
+    try {
+        const itemsArr = JSON.parse(item.json_items || item.JSON_Items || "[]");
+        if (itemsArr.length > 0) {
+            return itemsArr.map(it => ({
+                nama: it.barang || '',
+                qty: parseInt(it.qty) || 0,
+                hargaJual: parseFloat(it.harga || it.harga_jual || it.price || 0)
+            }));
+        }
+    } catch (e) {}
+
+    // Fallback parsing teks manual (contoh: "2x LPG 50 KG")
+    if (item.barang) {
+        const parts = item.barang.split(',');
+        parts.forEach(p => {
+            const match = p.trim().match(/(\d+)x\s+(.*)/i);
+            if (match) {
+                items.push({
+                    nama: match[2].trim(),
+                    qty: parseInt(match[1]) || 0,
+                    hargaJual: 0 // Tidak tersedia di fallback teks, di-handle via item.total nantinya
+                });
+            }
+        });
+    }
+    return items;
+}
+
+// Fungsi Timeline harga beli ter-optimasi ($O(1)$ s/d $O(N)$ lookup)
+function cariHargaBeliSesuaiTanggal(namaBarang, tanggalJualStr) {
+    if (!globalPembelianData || globalPembelianData.length === 0) return 0;
+    
+    const waktuJual = tanggalJualStr ? new Date(tanggalJualStr).getTime() : 0;
+    const targetNama = bersihkanNamaBarang(namaBarang);
+
+    // Karena globalPembelianData sudah di-sort descending, pencarian pertama yang lolos adalah yang paling terbaru/valid
+    const cocok = globalPembelianData.find(p => p.barangNormal === targetNama && p.waktuBeli <= waktuJual);
+    if (cocok) return cocok.hargaBeli;
+
+    // Fallback Kasar: ambil log pembelian pertama yang cocok tanpa peduli tanggal
+    const fallback = globalPembelianData.find(p => p.barangNormal === targetNama);
+    return fallback ? fallback.hargaBeli : 0;
 }
 
 // ==========================================
@@ -121,10 +183,7 @@ window.applyChartFilter = function() {
     const fMonth = document.getElementById('filterBulan') ? document.getElementById('filterBulan').value : "ALL";
     const fYear = document.getElementById('filterTahun') ? document.getElementById('filterTahun').value : new Date().getFullYear().toString();
     
-    // 1. Update Grafik
     renderSalesChart(fMonth, fYear);
-    
-    // 2. Update Nominal Pendapatan & Laba
     updateRevenueDisplay(fMonth, fYear);
 };
 
@@ -132,7 +191,8 @@ window.applyChartFilter = function() {
 // RENDER GRAFIK DINAMIS (3 PRODUK)
 // ==========================================
 function renderSalesChart(filterMonth, filterYear) {
-    if (!globalSalesData) return;
+    const chartCanvas = document.getElementById('salesChart');
+    if (!globalSalesData || !chartCanvas) return;
 
     const dataAgregat = {};
     const isYearlyView = (filterMonth === "ALL"); 
@@ -141,44 +201,22 @@ function renderSalesChart(filterMonth, filterYear) {
         if(item.status === 'BATAL') return; 
         
         const dateObj = parseDateToYMD(item.tanggal || item.CreatedAt);
-        const y = dateObj.y;
-        const m = dateObj.m;
-        const d = dateObj.d;
-        
-        if (filterYear !== "ALL" && y !== filterYear) return;
-        if (filterMonth !== "ALL" && m !== filterMonth) return;
+        if (filterYear !== "ALL" && dateObj.y !== filterYear) return;
+        if (filterMonth !== "ALL" && dateObj.m !== filterMonth) return;
 
-        let key = isYearlyView ? `${y}-${m}` : `${y}-${m}-${d}`;
+        let key = isYearlyView ? `${dateObj.y}-${dateObj.m}` : `${dateObj.y}-${dateObj.m}-${dateObj.d}`;
         
         if (!dataAgregat[key]) {
             dataAgregat[key] = { qty50: 0, qty12: 0, qty5: 0 };
         }
 
-        try {
-            const itemsArr = JSON.parse(item.json_items || item.JSON_Items || "[]");
-            if (itemsArr.length > 0) {
-                itemsArr.forEach(it => {
-                    const q = parseInt(it.qty) || 0;
-                    if(it.barang.includes("50")) dataAgregat[key].qty50 += q;
-                    else if(it.barang.includes("12")) dataAgregat[key].qty12 += q;
-                    else if(it.barang.includes("5.5") || it.barang.includes("5,5")) dataAgregat[key].qty5 += q;
-                });
-            } else {
-                if(item.barang) {
-                    const parts = item.barang.split(',');
-                    parts.forEach(p => {
-                        const match = p.trim().match(/(\d+)x\s+(.*)/i);
-                        if(match) {
-                            const q = parseInt(match[1]);
-                            const b = match[2].toLowerCase();
-                            if(b.includes("50")) dataAgregat[key].qty50 += q;
-                            else if(b.includes("12")) dataAgregat[key].qty12 += q;
-                            else if(b.includes("5.5") || b.includes("5,5")) dataAgregat[key].qty5 += q;
-                        }
-                    });
-                }
-            }
-        } catch(e) {}
+        const listItems = ekstrakItemsDariTransaksi(item);
+        listItems.forEach(it => {
+            const bNama = it.nama.toLowerCase();
+            if (bNama.includes("50")) dataAgregat[key].qty50 += it.qty;
+            else if (bNama.includes("12")) dataAgregat[key].qty12 += it.qty;
+            else if (bNama.includes("5.5") || bNama.includes("5,5")) dataAgregat[key].qty5 += it.qty;
+        });
     });
 
     const sortedKeys = Object.keys(dataAgregat).sort();
@@ -189,8 +227,8 @@ function renderSalesChart(filterMonth, filterYear) {
             const [y, m] = k.split('-');
             return filterYear === "ALL" ? `${monthNames[parseInt(m)-1]} ${y}` : monthNames[parseInt(m)-1];
         } else {
-            const [y, m, d] = k.split('-');
-            return `${parseInt(d)} ${monthNames[parseInt(m)-1]}`; 
+            const [,, d] = k.split('-');
+            return `${parseInt(d)} ${monthNames[parseInt(k.split('-')[1])-1]}`; 
         }
     });
 
@@ -198,8 +236,7 @@ function renderSalesChart(filterMonth, filterYear) {
     const dataset12 = sortedKeys.map(k => dataAgregat[k].qty12);
     const dataset5 = sortedKeys.map(k => dataAgregat[k].qty5);
 
-    const ctx = document.getElementById('salesChart').getContext('2d');
-    
+    const ctx = chartCanvas.getContext('2d');
     if (salesChartObj) {
         salesChartObj.destroy();
     }
@@ -264,76 +301,35 @@ function updateRevenueDisplay(filterMonth, filterYear) {
     let totalRevenue = 0;
     let totalProfit = 0;
 
-    // Helper internal: Mencari HargaBeli terakhir sebelum/pas tanggal penjualan terjadi
-    function cariHargaBeliSesuaiTanggal(namaBarang, tanggalJualStr) {
-        if (!globalPembelianData || globalPembelianData.length === 0) return 0;
-        
-        const waktuJual = new Date(tanggalJualStr).getTime();
-        
-        // Fungsi standarisasi string penamaan biar aman dari typo tanda koma/titik/spasi
-        const bersihkanNama = (str) => str ? str.toLowerCase().replace(/[\s,.]/g, '') : '';
-        const targetNama = bersihkanNama(namaBarang);
-
-        // Filter: Barang harus pas & tanggal beli harus lebih lama atau sama dengan tanggal jual
-        const opsiPembelian = globalPembelianData.filter(p => {
-            const namaMatch = bersihkanNama(p.Barang) === targetNama;
-            const waktuBeli = p.Tanggal ? new Date(p.Tanggal).getTime() : 0;
-            return namaMatch && waktuBeli <= waktuJual;
-        });
-
-        if (opsiPembelian.length > 0) {
-            // Urutkan berdasarkan Tanggal pembelian terbaru (descending)
-            opsiPembelian.sort((a, b) => new Date(b.Tanggal).getTime() - new Date(a.Tanggal).getTime());
-            return parseFloat(opsiPembelian[0].HargaBeli || 0);
-        }
-
-        // Fallback Kasar: Jika tanggal penjualan mendahului semua log pembelian, ambil harga manapun yang pertama cocok
-        const fallback = globalPembelianData.find(p => bersihkanNama(p.Barang) === targetNama);
-        return fallback ? parseFloat(fallback.HargaBeli || 0) : 0;
-    }
-
     globalSalesData.forEach(item => {
-        // HANYA hitung transaksi yang berstatus LUNAS
         if (item.status !== 'LUNAS') return; 
 
-        // Parsing tanggal untuk filter dropdown dashboard
         const dateObj = parseDateToYMD(item.tanggal || item.CreatedAt);
         if (filterYear !== "ALL" && dateObj.y !== filterYear) return;
         if (filterMonth !== "ALL" && dateObj.m !== filterMonth) return;
 
         try {
-            const itemsArr = JSON.parse(item.json_items || item.JSON_Items || "[]");
             const tanggalTransaksiAsli = item.tanggal || item.CreatedAt;
+            const jsonItemsValid = item.json_items || item.JSON_Items;
             
-            if (itemsArr.length > 0) {
-                itemsArr.forEach(it => {
-                    const qty = parseInt(it.qty) || 0;
-                    const hargaJual = parseFloat(it.harga || it.harga_jual || it.price || 0);
+            if (jsonItemsValid && jsonItemsValid !== "[]") {
+                const listItems = ekstrakItemsDariTransaksi(item);
+                listItems.forEach(it => {
+                    const hargaBeli = cariHargaBeliSesuaiTanggal(it.nama, tanggalTransaksiAsli);
                     
-                    // Ambil harga beli berdasarkan histori timeline log pembelian
-                    const hargaBeli = cariHargaBeliSesuaiTanggal(it.barang, tanggalTransaksiAsli);
-                    
-                    // Akumulasi rumus akuntansi
-                    totalRevenue += (hargaJual * qty);
-                    totalProfit += ((hargaJual - hargaBeli) * qty);
+                    totalRevenue += (it.hargaJual * it.qty);
+                    totalProfit += ((it.hargaJual - hargaBeli) * it.qty);
                 });
             } else {
-                // Fallback aman jika data json_items kosong namun baris utama memiliki nilai total
+                // Fallback aman jika data json_items kosong namun baris utama memiliki total global
                 const fallbackRevenue = parseFloat(item.total || item.Total || 0);
                 let totalEstimasiModal = 0;
                 
-                if (item.barang) {
-                    const parts = item.barang.split(',');
-                    parts.forEach(p => {
-                        const match = p.trim().match(/(\d+)x\s+(.*)/i);
-                        if (match) {
-                            const q = parseInt(match[1]);
-                            const namaB = match[2].trim();
-                            const hBeli = cariHargaBeliSesuaiTanggal(namaB, tanggalTransaksiAsli);
-                            totalEstimasiModal += (hBeli * q);
-                        }
-                    });
-                }
+                const fallbackItems = ekstrakItemsDariTransaksi(item);
+                fallbackItems.forEach(it => {
+                    const hBeli = cariHargaBeliSesuaiTanggal(it.nama, tanggalTransaksiAsli);
+                    totalEstimasiModal += (hBeli * it.qty);
+                });
                 
                 totalRevenue += fallbackRevenue;
                 totalProfit += (fallbackRevenue - totalEstimasiModal);
@@ -343,15 +339,7 @@ function updateRevenueDisplay(filterMonth, filterYear) {
         }
     });
 
-    // Tampilkan data ke dokumen HTML
-    const statSalesEl = document.getElementById('statSales');
-    if (statSalesEl) {
-        statSalesEl.textContent = "Rp " + totalRevenue.toLocaleString('id-ID');
-    }
-
-    // Target id baru untuk box Laba Bersih / Profit
-    const statProfitEl = document.getElementById('statProfit');
-    if (statProfitEl) {
-        statProfitEl.textContent = "Rp " + totalProfit.toLocaleString('id-ID');
-    }
+    // Render ke HTML dengan format Rupiah Indonesia
+    setElementText('statSales', "Rp " + totalRevenue.toLocaleString('id-ID'));
+    setElementText('statProfit', "Rp " + totalProfit.toLocaleString('id-ID'));
 }
