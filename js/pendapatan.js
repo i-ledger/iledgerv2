@@ -1,4 +1,4 @@
-<script>
+
   let isEditMode = false;
   let currentEditId = null;
   let globalDataCache = []; 
