@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Armada - iledger Admin</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <link class="rounded-md" rel="icon" href="r22.png" type="image/png">
+    <link rel="manifest" href="manifest.json">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background-color: #F8FAFC;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+
+        .sidebar-link.active {
+            background-color: #EFF6FF;
+            color: #1D4ED8;
+            font-weight: 700;
+        }
+        .sidebar-link.active svg {
+            color: #1D4ED8;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-slate-800">
+    
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-30 hidden opacity-0 transition-opacity duration-300 lg:hidden"></div>
+
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-white border-r border-slate-100 shadow-[4px_0_24px_rgba(0,0,0,0.02)] transform -translate-x-full lg:translate-x-0 lg:static lg:flex flex-col transition-transform duration-300 ease-in-out">
+        
+        <div class="h-20 flex items-center justify-center border-b border-slate-100">
+            <h2 class="text-2xl font-extrabold tracking-tight text-blue-600">iledger</h2>
+        </div>
+
+        <div class="px-6 py-6 border-b border-slate-100 flex flex-col items-center text-center bg-slate-50">
+            <div class="w-16 h-16 rounded-full bg-white border-4 border-white shadow-sm flex items-center justify-center mb-3 overflow-hidden relative group cursor-pointer">
+                <svg class="w-8 h-8 text-slate-300 group-hover:text-blue-500 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+            </div>
+            <h3 class="text-sm font-extrabold text-slate-800 leading-tight mb-0.5" id="userName">Admin Ledger</h3>
+            <p class="text-[10px] font-bold text-sky-600 uppercase tracking-widest mb-2 line-clamp-1" id="companyName">Memuat Entitas...</p>
+            <span class="text-[9px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full uppercase tracking-wider" id="userRole">Finance Admin</span>
+        </div>
+
+        <nav class="flex-1 px-4 py-4 space-y-1 overflow-y-auto no-scrollbar">
+            <a href="dashboard-admin.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:text-slate-800 hover:bg-slate-50 transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                <span class="font-semibold text-sm">Dashboard Overview</span>
+            </a>
+            
+            <a href="pendapatan.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:text-slate-800 hover:bg-slate-50 transition-all duration-200">
+                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <span class="font-semibold text-sm">Pendapatan</span>
+            </a>
+
+            <a href="pengeluaran.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:text-slate-800 hover:bg-slate-50 transition-all duration-200">
+                <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+                <span class="font-semibold text-sm">Pengeluaran</span>
+            </a>
+
+            <a href="kelola-pos-pengeluaran.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:text-slate-800 hover:bg-slate-50 transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                <span class="font-semibold text-sm">Kelola Pos Pengeluaran</span>
+            </a>
+
+            <div>
+                <button onclick="toggleDropdown('armadaDropdown', 'armadaArrow')" class="w-full flex items-center justify-between px-4 py-3 rounded-xl text-blue-600 bg-blue-50/40 font-bold transition-all duration-200 focus:outline-none">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10M13 16h6l3-3V9a1 1 0 00-1-1h-8m0 8v-4"/></svg>
+                        <span class="text-sm">Data Armada</span>
+                    </div>
+                    <svg id="armadaArrow" class="w-4 h-4 transform rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="armadaDropdown" class="pl-9 pr-2 py-1 space-y-1 bg-slate-50 rounded-xl mt-1 transition-all duration-300">
+                    <a href="armada-perusahaan.html" class="block py-2 px-3 text-xs font-bold text-blue-600 bg-blue-100/50 rounded-lg transition-colors">Armada Perusahaan</a>
+                    <a href="pajak-kendaraan.html" class="block py-2 px-3 text-xs font-semibold text-slate-500 hover:text-blue-600 rounded-lg transition-colors">Pajak Kendaraan</a>
+                    <a href="perawatan-armada.html" class="block py-2 px-3 text-xs font-semibold text-slate-500 hover:text-blue-600 rounded-lg transition-colors">Perawatan Armada</a>
+                    <a href="bbm.html" class="block py-2 px-3 text-xs font-semibold text-slate-500 hover:text-blue-600 rounded-lg transition-colors">Data BBM</a>
+                </div>
+            </div>
+
+            <a href="data-karyawan.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:text-slate-800 hover:bg-slate-50 transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <span class="font-semibold text-sm">Data Karyawan</span>
+            </a>
+
+            <a href="laba-rugi.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:text-slate-800 hover:bg-slate-50 transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span class="font-semibold text-sm">Laporan Laba Rugi</span>
+            </a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 flex flex-col min-w-0 bg-[#F8FAFC]">
+        
+        <header class="h-20 bg-white border-b border-slate-200 px-6 lg:px-10 flex justify-between items-center z-20 sticky top-0">
+            <div class="flex items-center gap-4">
+                <button id="btnHamburger" class="lg:hidden p-2 -ml-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <div>
+                    <h1 class="font-extrabold text-xl lg:text-2xl text-slate-800 tracking-tight" data-aos="fade-right">Armada Perusahaan</h1>
+                </div>
+            </div>
+            
+            <div class="relative flex items-center">
+                <button id="btnActionMenu" class="lg:hidden p-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+                </button>
+
+                <div id="actionContainer" class="hidden absolute right-0 top-14 w-56 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-slate-100 rounded-2xl p-2 flex-col gap-1 z-50 lg:static lg:flex lg:flex-row lg:bg-transparent lg:shadow-none lg:border-none lg:p-0 lg:w-auto lg:items-center lg:gap-2">
+                    <a href="users.html" class="flex items-center gap-3 px-4 py-2.5 lg:p-2.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all" title="Data Pengguna">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        <span class="lg:hidden text-sm font-semibold">Data Pengguna</span>
+                    </a>
+                    <a href="approval.html" class="relative flex items-center gap-3 px-4 py-2.5 lg:p-2.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all" title="Approval Akun">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        <span class="absolute top-2.5 left-7 lg:top-1.5 lg:right-1.5 w-2.5 h-2.5 bg-blue-500 border-2 border-white rounded-full hidden animate-pulse"></span>
+                        <span class="lg:hidden text-sm font-semibold">Approval Akun</span>
+                    </a>
+                    <a href="setting.html" class="flex items-center gap-3 px-4 py-2.5 lg:p-2.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all" title="Pengaturan">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <span class="lg:hidden text-sm font-semibold">Pengaturan</span>
+                    </a>
+                    <div class="hidden lg:block h-8 w-px bg-slate-200 mx-2"></div>
+                    <button onclick="API.logout()" class="w-full lg:w-auto flex items-center gap-3 px-4 py-2.5 lg:p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all" title="Keluar">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                        <span class="lg:hidden text-sm font-semibold text-red-500">Keluar Sistem</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-6 lg:p-10 scroll-smooth">
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100 flex items-center justify-between group" data-aos="fade-up" data-aos-delay="100">
+                    <div>
+                        <p class="text-sm font-semibold text-slate-500 mb-1 group-hover:text-blue-600 transition-colors">Total Fleet / Unit</p>
+                        <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight" id="countTotalArmada">12 Unit</h2>
+                    </div>
+                    <div class="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100 flex items-center justify-between group" data-aos="fade-up" data-aos-delay="200">
+                    <div>
+                        <p class="text-sm font-semibold text-slate-500 mb-1 group-hover:text-emerald-600 transition-colors">Status Siap Jalan</p>
+                        <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight text-emerald-600">10 Unit</h2>
+                    </div>
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-900 rounded-3xl p-6 shadow-md border border-slate-800 flex items-center justify-between group" data-aos="fade-up" data-aos-delay="300">
+                    <div>
+                        <p class="text-sm font-bold text-sky-300 mb-1 uppercase tracking-wider">Perbaikan / Masa KIR</p>
+                        <h2 class="text-3xl font-black text-white tracking-tight">2 Unit</h2>
+                    </div>
+                    <div class="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center text-sky-300 group-hover:scale-110 transition-transform">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <div class="lg:col-span-2 bg-white rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100" data-aos="fade-in" data-aos-delay="400">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 border-b border-slate-50 pb-4">
+                        <div>
+                            <h3 class="text-lg font-extrabold text-slate-800">Daftar Kendaraan Aktif</h3>
+                            <p class="text-xs font-medium text-slate-400 mt-0.5">Pemantauan nomor lambung, roda, plat, dan status dokumen logistik</p>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead>
+                                <tr class="text-xs font-bold uppercase text-slate-400 border-b border-slate-100">
+                                    <th class="py-3 px-2">Nama Unit</th>
+                                    <th class="py-3 px-2">Plat Nomor</th>
+                                    <th class="py-3 px-2">Konfigurasi</th>
+                                    <th class="py-3 px-2">Status Jalan</th>
+                                    <th class="py-3 px-2 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-50 text-slate-600 font-medium" id="fleetTableBody">
+                                <tr>
+                                    <td class="py-4 px-2 text-slate-900 font-bold">TRUK CECEP</td>
+                                    <td class="py-4 px-2 font-mono text-xs">D 9484 YV</td>
+                                    <td class="py-4 px-2 text-xs text-slate-500">Ban 4 (Belakang Single)</td>
+                                    <td class="py-4 px-2"><span class="bg-emerald-50 text-emerald-600 text-[11px] font-bold px-2.5 py-1 rounded-full border border-emerald-100">Aktif Operasional</span></td>
+                                    <td class="py-4 px-2 text-center">
+                                        <button onclick="detailUnit('TRUK CECEP')" class="text-xs font-bold text-blue-600 hover:underline">Detail</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="py-4 px-2 text-slate-900 font-bold">TRUK JAJA</td>
+                                    <td class="py-4 px-2 font-mono text-xs">Z 9420 DC</td>
+                                    <td class="py-4 px-2 text-xs text-slate-500">Ban 6 (Double Belakang)</td>
+                                    <td class="py-4 px-2"><span class="bg-emerald-50 text-emerald-600 text-[11px] font-bold px-2.5 py-1 rounded-full border border-emerald-100">Aktif Operasional</span></td>
+                                    <td class="py-4 px-2 text-center">
+                                        <button onclick="detailUnit('TRUK JAJA')" class="text-xs font-bold text-blue-600 hover:underline">Detail</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="py-4 px-2 text-slate-900 font-bold">HINO EURO</td>
+                                    <td class="py-4 px-2 font-mono text-xs">D 8821 XA</td>
+                                    <td class="py-4 px-2 text-xs text-slate-500">Ban 6 (Double Belakang)</td>
+                                    <td class="py-4 px-2"><span class="bg-amber-50 text-amber-600 text-[11px] font-bold px-2.5 py-1 rounded-full border border-amber-100">Bengkel / Perawatan</span></td>
+                                    <td class="py-4 px-2 text-center">
+                                        <button onclick="detailUnit('HINO EURO')" class="text-xs font-bold text-blue-600 hover:underline">Detail</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="bg-white rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100" data-aos="fade-up" data-aos-delay="500">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-base font-extrabold text-slate-800">Registrasi Unit Baru</h3>
+                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        
+                        <form id="formQuickArmada" class="space-y-3" onsubmit="handleTambahArmada(event)">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Panggilan / Driver</label>
+                                <input type="text" placeholder="Contoh: TRUK AGNES / ESTU DENI" required class="w-full bg-slate-50 border border-slate-200 py-2.5 px-3 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Nomor Registrasi / Plat</label>
+                                <input type="text" placeholder="Contoh: D 1234 XYZ" required class="w-full bg-slate-50 border border-slate-200 py-2.5 px-3 rounded-xl text-xs font-semibold uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Konfigurasi Roda / Ban</label>
+                                <select required class="w-full bg-slate-50 border border-slate-200 py-2.5 px-3 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                                    <option value="4_roda">4 Roda (Belakang Tunggal / 1 Ban per sisi)</option>
+                                    <option value="6_roda">6 Roda (Belakang Double / 2 Ban per sisi)</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-sm transition-all transform active:scale-[0.98]">
+                                Simpan Data Kendaraan
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>AOS.init({ once: true });</script>
+    <script src="js/api.js"></script>
+    <script src="js/admin.js"></script>
+    
+    <script>
+        // Toggle Dropdown Sub-menu Data Armada
+        function toggleDropdown(dropdownId, arrowId) {
+            const dropdown = document.getElementById(dropdownId);
+            const arrow = document.getElementById(arrowId);
+            dropdown.classList.toggle('hidden');
+            arrow.classList.toggle('rotate-180');
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => { 
+            const user = JSON.parse(localStorage.getItem('r22_user')); 
+            if(user){ 
+                document.getElementById('userName').textContent = user.nama; 
+                if(document.getElementById('companyName')) {
+                    document.getElementById('companyName').textContent = user.perusahaan || "PT. INDO LEDGER TEKNOLOGI";
+                }
+                if(document.getElementById('userRole')) {
+                    document.getElementById('userRole').textContent = user.role || "Finance Admin";
+                }
+            }
+        });
+
+        function handleTambahArmada(e) {
+            e.preventDefault();
+            Swal.fire({ 
+                icon: 'success', 
+                title: 'Armada Berhasil Didata', 
+                text: 'Unit logistik baru telah masuk ke ekosistem tracking admin.', 
+                confirmButtonColor: '#2563EB' 
+            });
+            document.getElementById('formQuickArmada').reset();
+        }
+
+        function detailUnit(namaUnit) {
+            Swal.fire({
+                title: namaUnit,
+                html: `<div class="text-left text-xs space-y-2">
+                        <p><strong>Status Subsidi Tepat:</strong> Terverifikasi ✓</p>
+                        <p><strong>Inspeksi KIR Berkala:</strong> Berlaku</p>
+                        <p><strong>Lokasi Penugasan:</strong> Distribusi Regional</p>
+                       </div>`,
+                icon: 'info',
+                confirmButtonColor: '#2563EB'
+            });
+        }
+    </script>
+</body>
+</html>
